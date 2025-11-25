@@ -381,13 +381,12 @@ export default function PublishPage({ plans }: PublishPageProps) {
                     </div>
                     <div className="mt-4">
                         <h2 className="text-xl sm:text-2xl font-semibold text-slate-900">
-                            Formulário de nota de falecimento
+                            Formulario de anuncio necrologico
                         </h2>
                         <p className="mt-2 text-sm text-slate-600">
-                            Preencha os dados abaixo para partilhar uma homenagem cuidadosa e
-                            acolhedora. Todas as submissões são verificadas antes da publicação
-                            para garantir respeito e autenticidade.
+                            Preencha os dados abaixo para publicar um comunicado de falecimento, uma homenagem ou outros anuncios relacionados. Todas as submetas sao verificadas antes da publicacao para garantir respeito e autenticidade.
                         </p>
+
                     </div>
                     <div className="mt-5 grid gap-3 sm:grid-cols-2">
                         <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs text-slate-700 sm:text-sm">
@@ -401,26 +400,24 @@ export default function PublishPage({ plans }: PublishPageProps) {
                     </div>
                 </div>
 
-                <Card className="bg-white text-slate-900 dark:bg-white dark:text-slate-900 border-slate-200 border-2 shadow-lg">
+                <Card className="bg-white text-slate-900 dark:bg-white dark:text-slate-900 border-slate-200 border-2 shadow-lg pt-0">
                     <CardHeader
-                        className={`border-b-2 ${
-                            selectedType === 'homenagem'
-                                ? 'bg-rose-50 border-rose-200'
-                                : selectedType === 'comunicado'
-                                    ? 'bg-blue-50 border-blue-200'
-                                    : 'bg-purple-50 border-purple-200'
-                        }`}
+                        className={`border-b-2 py-4 ${selectedType === 'homenagem'
+                            ? 'bg-rose-50 border-rose-200'
+                            : selectedType === 'comunicado'
+                                ? 'bg-blue-50 border-blue-200'
+                                : 'bg-purple-50 border-purple-200'
+                            }`}
                     >
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div className="flex items-center gap-4">
                                 <div
-                                    className={`p-3 rounded-xl ${
-                                        selectedType === 'homenagem'
-                                            ? 'bg-rose-100'
-                                            : selectedType === 'comunicado'
-                                                ? 'bg-blue-100'
-                                                : 'bg-purple-100'
-                                    }`}
+                                    className={`p-3 rounded-xl ${selectedType === 'homenagem'
+                                        ? 'bg-rose-100'
+                                        : selectedType === 'comunicado'
+                                            ? 'bg-blue-100'
+                                            : 'bg-purple-100'
+                                        }`}
                                 >
                                     {selectedType === 'homenagem' ? (
                                         <Heart className="w-7 h-7 text-rose-600" />
@@ -458,7 +455,7 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                         setSelectedPlan(null);
                                         setSelectedType(null);
                                     }}
-                                    className="self-start sm:self-auto"
+                                    className="sm:ml-4"
                                 >
                                     <span className="mr-2">{'←'}</span>
                                     Mudar plano
@@ -781,7 +778,8 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                                     className="mt-1 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                                                 />
                                                 <span className="max-w-xl leading-relaxed">
-                                                    Declaro, sob minha responsabilidade, que todas as informacoes fornecidas neste anuncio necrologico sao verdadeiras e autorizo a sua publicacao neste site. *
+                                                    Declaro, que todas as informações fornecidas neste anúncio necrológico são verdadeiras e autorizo a sua
+                                                    publicação neste site. *
                                                 </span>
                                             </label>
                                         </div>
@@ -852,28 +850,28 @@ export default function PublishPage({ plans }: PublishPageProps) {
                             <div className="flex flex-col sm:flex-row gap-3">
                                 <div className="flex-1">
                                     <div className="flex gap-3 justify-end">
-                                    <Button
-                                        type="button"
-                                        variant="secondary"
-                                        onClick={() => router.visit('/')}
-                                    >
-                                        Cancelar
-                                    </Button>
-                                    <Button
-                                        type="submit"
-                                        className={`text-white ${selectedType === 'homenagem'
-                                            ? 'bg-rose-600 hover:bg-rose-700'
-                                            : selectedType === 'comunicado'
-                                                ? 'bg-blue-600 hover:bg-blue-700'
-                                                : selectedPlan?.type === 'outros'
-                                                    ? 'bg-purple-600 hover:bg-purple-700'
-                                                    : 'bg-blue-600 hover:bg-blue-700'
-                                            }`}
-                                    >
-                                        <Send className="w-4 h-4 mr-2" />
-                                        Publicar anúncio
-                                    </Button>
-                                </div>
+                                        <Button
+                                            type="button"
+                                            variant="secondary"
+                                            onClick={() => router.visit('/')}
+                                        >
+                                            Cancelar
+                                        </Button>
+                                        <Button
+                                            type="submit"
+                                            className={`text-white ${selectedType === 'homenagem'
+                                                ? 'bg-rose-600 hover:bg-rose-700'
+                                                : selectedType === 'comunicado'
+                                                    ? 'bg-blue-600 hover:bg-blue-700'
+                                                    : selectedPlan?.type === 'outros'
+                                                        ? 'bg-purple-600 hover:bg-purple-700'
+                                                        : 'bg-blue-600 hover:bg-blue-700'
+                                                }`}
+                                        >
+                                            <Send className="w-4 h-4 mr-2" />
+                                            Publicar anúncio
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
                             <div className="text-xs text-slate-500 mt-4">

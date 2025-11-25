@@ -144,22 +144,6 @@ export default function AnnouncementDetail() {
         return lines.join('\n');
     };
 
-    const handleShareWhatsApp = () => {
-        const text = buildShareText();
-        const shareUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
-
-        window.open(shareUrl, '_blank', 'noopener,noreferrer');
-    };
-
-    const handleShareFacebook = () => {
-        const url = window.location.href;
-        const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-            url,
-        )}`;
-
-        window.open(shareUrl, '_blank', 'noopener,noreferrer');
-    };
-
     const recentAnnouncements = announcements
         .filter((item) => item.slug !== slug)
         .sort(

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
-import { Bell, HeartPulse, Heart, PenSquare, Search, Menu, X } from 'lucide-react';
+import { Bell, Heart, PenSquare, Search, Menu, X } from 'lucide-react';
 
 export default function PublicHeader() {
     const { url } = usePage();
