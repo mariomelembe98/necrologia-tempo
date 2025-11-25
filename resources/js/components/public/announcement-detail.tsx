@@ -207,31 +207,11 @@ export default function AnnouncementDetail() {
                             <Button
                                 variant="outline"
                                 onClick={handleShare}
-                                className="hidden sm:inline-flex border border-white/70 bg-white/10 text-white shadow-lg backdrop-blur-sm hover:bg-white/20 hover:text-white"
+                                className="inline-flex border border-white/70 bg-white/10 text-white shadow-lg backdrop-blur-sm hover:bg-white/20 hover:text-white"
                             >
-                                <Share2 className="w-4 h-4 sm:mr-2" />
+                                <Share2 className="w-4 h-4 mr-0 sm:mr-2" />
                                 <span className="hidden sm:inline">
                                     Compartilhar
-                                </span>
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={handleShareWhatsApp}
-                                className="border border-white/70 bg-white/10 text-white shadow-lg backdrop-blur-sm hover:bg-white/20 hover:text-white"
-                            >
-                                <span className="text-xs font-medium">
-                                    WhatsApp
-                                </span>
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={handleShareFacebook}
-                                className="hidden sm:inline-flex border border-white/70 bg-white/10 text-white shadow-lg backdrop-blur-sm hover:bg-white/20 hover:text-white"
-                            >
-                                <span className="text-xs font-medium">
-                                    Facebook
                                 </span>
                             </Button>
                         </div>
