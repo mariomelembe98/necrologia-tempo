@@ -1,0 +1,179 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Advertiser;
+use App\Models\Announcement;
+use App\Models\AnnouncementPlan;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class AnnouncementController extends Controller
+{
+    public function index(Request $request): Response
+    {
+        $from = $request->date('from');
+        $to = $request->date('to');
+
+        $query = Announcement::with(['advertiser', 'plan']);
+
+        if ($from) {
+            $query->whereDate('created_at', '>=', $from);
+        }
+
+        if ($to) {
+            $query->whereDate('created_at', '<=', $to);
+        }
+
+        $announcements = $query
+            ->latest()
+            ->get();
+
+        return Inertia::render('Admin/Announcements/Index', [
+            'announcements' => $announcements,
+            'filters' => [
+                'from' => $from?->toDateString(),
+                'to' => $to?->toDateString(),
+            ],
+        ]);
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $data = $request->validate(
+            [
+                'type' => 'required|string|in:homenagem,comunicado,outros',
+                'name' => 'required|string|max:255',
+                'dateOfBirth' => 'nullable|date',
+                'dateOfDeath' => 'nullable|date|after_or_equal:dateOfBirth',
+                'location' => 'required|string|max:255',
+                'description' => 'required|string',
+                'author' => 'required|string|max:255',
+                'plan' => 'nullable|string|max:255',
+                'advertiserName' => 'required|string|max:255',
+                'advertiserPhone' => 'required|string|max:255',
+                'advertiserEmail' => 'required|email|max:255',
+                'photo' => 'nullable|image|max:5120',
+                'document' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            ],
+            [
+                'type.required' => 'Selecione o tipo de anúncio.',
+                'name.required' => 'Informe o nome da pessoa homenageada/falecida.',
+                'dateOfBirth.date' => 'A data de nascimento deve ser uma data válida.',
+                'dateOfDeath.date' => 'A data de falecimento deve ser uma data válida.',
+                'dateOfDeath.after_or_equal' => 'A data de falecimento deve ser igual ou posterior à data de nascimento.',
+                'location.required' => 'Informe o local (cidade, província).',
+                'description.required' => 'Escreva a mensagem ou detalhes do anúncio.',
+                'author.required' => 'Informe quem está publicando o anúncio.',
+                'advertiserName.required' => 'Informe o nome completo do anunciante.',
+                'advertiserPhone.required' => 'Informe o telefone de contato do anunciante.',
+                'advertiserEmail.required' => 'Informe o e-mail do anunciante.',
+                'advertiserEmail.email' => 'Informe um e-mail válido.',
+                'photo.image' => 'A foto deve ser uma imagem nos formatos JPG ou PNG.',
+                'photo.max' => 'A foto não pode ter mais de 5MB.',
+                'document.required' => 'Envie um documento de identificação do anunciante.',
+                'document.mimes' => 'O documento deve ser JPG, PNG ou PDF.',
+                'document.max' => 'O documento não pode ter mais de 5MB.',
+            ],
+        );
+
+        $plan = null;
+
+        if (! empty($data['plan'])) {
+            $plan = AnnouncementPlan::query()
+                ->where('name', $data['plan'])
+                ->where('is_active', true)
+                ->first();
+        }
+
+        $advertiser = Advertiser::firstOrCreate(
+            [
+                'email' => $data['advertiserEmail'],
+            ],
+            [
+                'name' => $data['advertiserName'],
+                'phone' => $data['advertiserPhone'],
+            ],
+        );
+
+        $photoPath = null;
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store(
+                'announcements/photos',
+                'public',
+            );
+        }
+
+        $documentPath = null;
+        if ($request->hasFile('document')) {
+            $documentPath = $request->file('document')->store(
+                'announcements/documents',
+                'public',
+            );
+        }
+
+        $announcement = Announcement::create([
+            'type' => $data['type'],
+            'name' => $data['name'],
+            'slug' => $this->generateUniqueSlug($data['name']),
+            'date_of_birth' => $data['dateOfBirth'] ?? null,
+            'date_of_death' => $data['dateOfDeath'] ?? null,
+            'location' => $data['location'],
+            'description' => $data['description'],
+            'author' => $data['author'],
+            'advertiser_id' => $advertiser->id,
+            'plan_id' => $plan?->id,
+            'status' => 'pending',
+            'photo_path' => $photoPath,
+            'document_path' => $documentPath,
+            'expires_at' => $plan
+                ? now()->addDays($plan->duration_days)
+                : null,
+        ]);
+
+        return redirect()
+            ->route('public.anuncio.show', $announcement)
+            ->with('success', 'Anúncio enviado para revisão.');
+    }
+
+    protected function generateUniqueSlug(string $name): string
+    {
+        $base = Str::slug($name);
+
+        if ($base === '') {
+            $base = 'anuncio';
+        }
+
+        $slug = $base;
+        $counter = 2;
+
+        while (Announcement::where('slug', $slug)->exists()) {
+            $slug = "{$base}-{$counter}";
+            $counter++;
+        }
+
+        return $slug;
+    }
+
+    public function updateStatus(Request $request, Announcement $announcement): RedirectResponse
+    {
+        $data = $request->validate([
+            'status' => 'required|string|in:pending,published,rejected,archived',
+        ]);
+
+        $announcement->status = $data['status'];
+
+        if ($data['status'] === 'published' && ! $announcement->published_at) {
+            $announcement->published_at = now();
+        }
+
+        $announcement->save();
+
+        return redirect()
+            ->back()
+            ->with('success', 'Status do anúncio atualizado.');
+    }
+}
