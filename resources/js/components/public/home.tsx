@@ -1,12 +1,33 @@
+import { useEffect, useState } from 'react';
 import { Link } from '@inertiajs/react';
 import { ArrowDown, Bell, Heart, HeartPulse, PlusCircle, Search } from 'lucide-react';
 
 import { useAnnouncements } from '@/context/AnnouncementContext';
 import { AnnouncementCard } from './announcement-card';
 
+const HERO_IMAGES = [
+    '/images/hero/img-hero-1.jpg',
+    '/images/hero/img-hero-2.jpeg',
+    '/images/hero/img-hero-3.jpeg',
+];
+
 export default function Home() {
     const { announcements } = useAnnouncements();
     const recentAnnouncements = announcements.slice(0, 6);
+
+    const [heroIndex, setHeroIndex] = useState(0);
+
+    useEffect(() => {
+        if (HERO_IMAGES.length <= 1) {
+            return;
+        }
+
+        const interval = setInterval(() => {
+            setHeroIndex((current) => (current + 1) % HERO_IMAGES.length);
+        }, 12000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     const scrollToContent = () => {
         document
@@ -16,7 +37,20 @@ export default function Home() {
 
     return (
         <>
-            <section className="relative h-screen flex items-center justify-center bg-gradient-to-b from-sky-900 via-amber-200/60 to-slate-900">
+            <section className="relative h-screen flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0">
+                    {HERO_IMAGES.map((src, index) => (
+                        <img
+                            key={src}
+                            src={src}
+                            alt="Fundo do hero"
+                            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-out ${
+                                heroIndex === index ? 'opacity-100' : 'opacity-0'
+                            }`}
+                        />
+                    ))}
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-b from-sky-900/80 via-sky-900/40 to-slate-900/95" />
                 <div className="absolute inset-0 opacity-10">
                     <div
                         className="absolute inset-0"
@@ -36,7 +70,7 @@ export default function Home() {
                     >
                         Tempo Necrologia
                     </h1>
-                    <p className="text-gray-700 mb-12 max-w-2xl mx-auto text-base sm:text-lg">
+                    <p className="text-slate-100 mb-12 max-w-2xl mx-auto text-base sm:text-lg">
                         Um espaço dedicado à memória daqueles que partiram. <br />
                         <br />
                         Publique homenagens, comunicados e mantenha viva a

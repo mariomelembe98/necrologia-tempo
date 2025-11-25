@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
-import { Bell, HeartPulse, Heart, PenSquare, Search } from 'lucide-react';
+import { Bell, HeartPulse, Heart, PenSquare, Search, Menu, X } from 'lucide-react';
 
 export default function PublicHeader() {
     const { url } = usePage();
 
     const isActive = (path: string) => url === path;
+    const [mobileOpen, setMobileOpen] = useState(false);
 
     const desktopLinkBase =
         'flex items-center gap-2 text-sm transition-all duration-200 ease-out hover:-translate-y-0.5';
@@ -38,11 +40,12 @@ export default function PublicHeader() {
         <header className="sticky top-0 z-50 border-b border-gray-200 bg-white shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
-                    <Link href="/" className="flex items-center gap-2">
-                        <HeartPulse className="w-6 h-6 text-red-500" />
-                        <span className="text-sm sm:text-base font-semibold tracking-tight text-gray-900">
-                            Tempo Necrologia
-                        </span>
+                    <Link href="/" className="flex items-center gap-3">
+                        <img
+                            src="/images/logo/logo-vermelho.png"
+                            alt="Tempo Necrologia"
+                            className="h-10 w-auto sm:h-11"
+                        />
                     </Link>
 
                     <nav className="hidden md:flex items-center gap-8">
@@ -89,38 +92,56 @@ export default function PublicHeader() {
                         </Link>
                     </nav>
 
-                    <div className="md:hidden">
+                    <div className="md:hidden flex items-center gap-2">
                         <Link
                             href="/publicar"
                             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors duration-200 bg-gray-900 text-white hover:bg-gray-800"
                         >
                             <PenSquare className="w-4 h-4" />
                         </Link>
+                        <button
+                            type="button"
+                            onClick={() => setMobileOpen((open) => !open)}
+                            className="inline-flex items-center justify-center rounded-md p-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                            aria-label={mobileOpen ? 'Fechar menu' : 'Abrir menu'}
+                        >
+                            {mobileOpen ? (
+                                <X className="h-5 w-5" />
+                            ) : (
+                                <Menu className="h-5 w-5" />
+                            )}
+                        </button>
                     </div>
                 </div>
 
-                <nav className="md:hidden pb-4 flex gap-4 overflow-x-auto">
-                    <Link href="/" className={mobileChipClass('/')}>
-                        Home
-                    </Link>
-                    <Link
-                        href="/homenagens"
-                        className={mobileChipClass('/homenagens')}
-                    >
-                        Homenagens
-                    </Link>
-                    <Link
-                        href="/comunicados"
-                        className={mobileChipClass('/comunicados')}
-                    >
-                        Comunicados
-                    </Link>
-                    <Link
-                        href="/pesquisar"
-                        className={mobileChipClass('/pesquisar')}
-                    >
-                        Pesquisar
-                    </Link>
+                <nav
+                    className={`md:hidden border-t border-gray-200 overflow-hidden transition-all duration-300 ease-out ${
+                        mobileOpen ? 'max-h-40 pb-4 pt-3 opacity-100' : 'max-h-0 pb-0 pt-0 opacity-0'
+                    }`}
+                >
+                    <div className="flex flex-col gap-2">
+                        <Link href="/" className={mobileChipClass('/')}>
+                            Home
+                        </Link>
+                        <Link
+                            href="/homenagens"
+                            className={mobileChipClass('/homenagens')}
+                        >
+                            Homenagens
+                        </Link>
+                        <Link
+                            href="/comunicados"
+                            className={mobileChipClass('/comunicados')}
+                        >
+                            Comunicados
+                        </Link>
+                        <Link
+                            href="/pesquisar"
+                            className={mobileChipClass('/pesquisar')}
+                        >
+                            Pesquisar
+                        </Link>
+                    </div>
                 </nav>
             </div>
         </header>

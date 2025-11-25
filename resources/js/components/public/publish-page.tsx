@@ -271,19 +271,19 @@ export default function PublishPage({ plans }: PublishPageProps) {
             <div className="min-h-screen bg-gradient-to-b from-sky-900 via-amber-200/60 to-slate-900 py-8 sm:py-12">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     <header className="mb-8">
-                        <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 mb-3">
+                        <h1 className="text-2xl sm:text-3xl font-semibold text-white mb-3">
                             Publicar Anúncio
                         </h1>
-                        <p className="text-sm text-slate-600">
+                        <p className="text-sm text-slate-100 max-w-2xl">
                             Escolha o plano ideal para sua publicação.
                         </p>
                     </header>
 
-                    <div className="mb-6">
-                        <h2 className="text-lg font-semibold text-slate-900 mb-1">
+                    <div className="mb-6 rounded-2xl bg-gray-800/30 p-6 sm:p-8 text-center">
+                        <h2 className="text-lg font-semibold text-white mb-1">
                             Planos disponíveis
                         </h2>
-                        <p className="text-sm text-slate-600">
+                        <p className="text-sm text-slate-200">
                             Selecione o plano que melhor atende às suas
                             necessidades.
                         </p>
