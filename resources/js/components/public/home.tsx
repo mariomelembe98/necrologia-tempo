@@ -30,7 +30,10 @@ export default function Home() {
 
                 <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-slate-50">
                     <HeartPulse className="w-16 h-16 text-red-500 mx-auto mb-6 opacity-90" />
-                    <h1 className="text-slate-50 mb-6 text-4xl sm:text-5xl font-semibold tracking-tight">
+                    <h1
+                        className="text-slate-50 mb-6 text-4xl sm:text-5xl font-bold tracking-tight"
+                        style={{ fontFamily: '"VeronaBold", system-ui, serif' }}
+                    >
                         Tempo Necrologia
                     </h1>
                     <p className="text-gray-700 mb-12 max-w-2xl mx-auto text-base sm:text-lg">

@@ -40,7 +40,7 @@ export default function PublicHeader() {
                 <div className="flex items-center justify-between h-16">
                     <Link href="/" className="flex items-center gap-2">
                         <HeartPulse className="w-6 h-6 text-red-500" />
-                        <span className="text-sm sm:text-base font-semibold tracking-tight text-red-600">
+                        <span className="text-sm sm:text-base font-semibold tracking-tight text-gray-900">
                             Tempo Necrologia
                         </span>
                     </Link>

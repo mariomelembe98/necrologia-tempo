@@ -392,11 +392,11 @@ export default function PublishPage({ plans }: PublishPageProps) {
                     <div className="mt-5 grid gap-3 sm:grid-cols-2">
                         <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs text-slate-700 sm:text-sm">
                             <Phone className="h-4 w-4 text-slate-500" />
-                            <span>Suporte: +258 XX XXX XXXX</span>
+                            <span>Suporte: <a href="tel:+258833219644">+258 83 321 9644</a></span>
                         </div>
                         <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs text-slate-700 sm:text-sm">
                             <Mail className="h-4 w-4 text-slate-500" />
-                            <span>necrotario@tempo.co.mz</span>
+                            <span>Email: <a href="mailto:necrotario@tempo.co.mz">necrotario@tempo.co.mz</a></span>
                         </div>
                     </div>
                 </div>
@@ -764,7 +764,67 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                 </div>
                             </div>
 
-                            <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-slate-200">
+                            <div className="flex items-start gap-3 pt-6 border-t border-slate-200">
+                                <div className="flex-1">
+                                    <div className="rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 sm:px-5 sm:py-5">
+                                        <div className="mb-4">
+                                            <label className="flex items-start gap-3 text-xs sm:text-sm text-slate-700">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={responsibilityAccepted}
+                                                    onChange={(event) =>
+                                                        setResponsibilityAccepted(
+                                                            event.target
+                                                                .checked,
+                                                        )
+                                                    }
+                                                    className="mt-1 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                                />
+                                                <span className="max-w-xl leading-relaxed">
+                                                    Declaro, sob minha responsabilidade, que todas as informacoes fornecidas neste anuncio necrologico sao verdadeiras e autorizo a sua publicacao neste site. *
+                                                </span>
+                                            </label>
+                                        </div>
+
+                                        <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-4 sm:p-5">
+                                            <h3 className="mb-3 text-sm font-semibold text-slate-900">
+                                                Formas de pagamento
+                                            </h3>
+                                            <div className="grid gap-3 sm:grid-cols-3">
+                                                <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs sm:text-sm">
+                                                    <div className="text-[11px] font-semibold tracking-wide text-slate-500">
+                                                        EMOLA
+                                                    </div>
+                                                    <div className="mt-1 text-slate-900">
+                                                        +258 XX XXX XXXX
+                                                    </div>
+                                                </div>
+                                                <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs sm:text-sm">
+                                                    <div className="text-[11px] font-semibold tracking-wide text-slate-500">
+                                                        M-PESA
+                                                    </div>
+                                                    <div className="mt-1 text-slate-900">
+                                                        +258 XX XXX XXXX
+                                                    </div>
+                                                </div>
+                                                <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs sm:text-sm">
+                                                    <div className="text-[11px] font-semibold tracking-wide text-slate-500">
+                                                        TRANSFERENCIA
+                                                    </div>
+                                                    <div className="mt-1 text-slate-900">
+                                                        NIB/Conta XXXX XXXX XXXX
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p className="mt-3 text-[11px] text-slate-500 sm:text-xs">
+                                                O pagamento deve ser efetuado apos a aprovacao do anuncio. Entraremos em contacto com os dados de confirmacao.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col sm:flex-row gap-3 pt-4">
                                 {selectedPlan && (
                                     <div className="flex-1">
                                         <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
@@ -788,7 +848,10 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                     </div>
                                 )}
 
-                                <div className="flex gap-3 justify-end">
+                            </div>
+                            <div className="flex flex-col sm:flex-row gap-3">
+                                <div className="flex-1">
+                                    <div className="flex gap-3 justify-end">
                                     <Button
                                         type="button"
                                         variant="secondary"
@@ -811,6 +874,18 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                         Publicar anúncio
                                     </Button>
                                 </div>
+                                </div>
+                            </div>
+                            <div className="text-xs text-slate-500 mt-4">
+                                Ao submeter este formulário, você concorda com os nossos{' '}
+                                <a href="/terms" className="underline">
+                                    Termos de Serviço
+                                </a>{' '}
+                                e{' '}
+                                <a href="/privacy" className="underline">
+                                    Política de Privacidade
+                                </a>
+                                .
                             </div>
                         </form>
                     </CardContent>
