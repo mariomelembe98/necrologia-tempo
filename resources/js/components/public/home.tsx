@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { ArrowDown, Bell, Heart, PlusCircle, Search } from 'lucide-react';
+import { ArrowDown, Bell, Heart, HeartPulse, PlusCircle, Search } from 'lucide-react';
 
 import { useAnnouncements } from '@/context/AnnouncementContext';
 import { AnnouncementCard } from './announcement-card';
@@ -17,7 +17,6 @@ export default function Home() {
     return (
         <>
             <section className="relative h-screen flex items-center justify-center bg-gradient-to-b from-sky-900 via-amber-200/60 to-slate-900">
-                <div className="absolute inset-0 bg-gradient-to-b from-sky-900/90 via-sky-900/80 to-slate-900/95" />
                 <div className="absolute inset-0 opacity-10">
                     <div
                         className="absolute inset-0"
@@ -30,11 +29,11 @@ export default function Home() {
                 </div>
 
                 <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-slate-50">
-                    <Heart className="w-16 h-16 text-amber-300 mx-auto mb-6 opacity-90" />
+                    <HeartPulse className="w-16 h-16 text-red-500 mx-auto mb-6 opacity-90" />
                     <h1 className="text-slate-50 mb-6 text-4xl sm:text-5xl font-semibold tracking-tight">
                         Tempo Necrologia
                     </h1>
-                    <p className="text-slate-100 mb-12 max-w-2xl mx-auto text-base sm:text-lg">
+                    <p className="text-gray-700 mb-12 max-w-2xl mx-auto text-base sm:text-lg">
                         Um espaço dedicado à memória daqueles que partiram. <br />
                         <br />
                         Publique homenagens, comunicados e mantenha viva a
