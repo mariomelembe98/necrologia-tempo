@@ -60,7 +60,7 @@ export default function Home() {
 
                     <blockquote className="text-slate-200 italic border-l-2 border-slate-500 pl-4 inline-block">
                         &quot;Aqueles que amamos nunca morrem, apenas partem
-                        antes de nós.&quot;
+                        antes de nós.&quot; 
                     </blockquote>
 
                     <button
