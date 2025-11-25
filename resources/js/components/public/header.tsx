@@ -9,7 +9,7 @@ export default function PublicHeader() {
     const [mobileOpen, setMobileOpen] = useState(false);
 
     const desktopLinkBase =
-        'flex items-center gap-2 text-sm transition-all duration-200 ease-out hover:-translate-y-0.5';
+        'flex items-center gap-2 text-base transition-all duration-200 ease-out hover:-translate-y-0.5';
 
     const desktopLinkClass = (path: string) => {
         const active = isActive(path);
@@ -23,7 +23,7 @@ export default function PublicHeader() {
     };
 
     const mobileChipBase =
-        'whitespace-nowrap px-3 py-1 rounded-full text-sm transition-all duration-200 ease-out hover:-translate-y-0.5';
+        'whitespace-nowrap px-3 py-1.5 rounded-full text-sm sm:text-base transition-all duration-200 ease-out hover:-translate-y-0.5';
 
     const mobileChipClass = (path: string) => {
         const active = isActive(path);

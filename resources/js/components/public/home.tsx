@@ -65,10 +65,10 @@ export default function Home() {
                 <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-slate-50">
                     <HeartPulse className="w-16 h-16 text-red-500 mx-auto mb-6 opacity-90" />
                     <h1
-                        className="text-slate-50 mb-6 text-4xl sm:text-5xl font-bold tracking-tight"
+                        className="text-red-500 mb-6 text-4xl sm:text-5xl font-bold tracking-tight"
                         style={{ fontFamily: '"VeronaBold", system-ui, serif' }}
                     >
-                        Tempo Necrologia
+                        Necrologia
                     </h1>
                     <p className="text-slate-100 mb-12 max-w-2xl mx-auto text-base sm:text-lg">
                         Um espaço dedicado à memória daqueles que partiram. <br />

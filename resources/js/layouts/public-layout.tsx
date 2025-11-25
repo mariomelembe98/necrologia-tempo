@@ -31,7 +31,7 @@ export default function PublicLayout({
                 </main>
                 <footer className="mt-8 border-t border-slate-200/70 bg-white/80">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                        <p className="text-xs text-slate-500 text-center">
+                        <p className="text-sm sm:text-base text-slate-500 text-center">
                             As informações publicadas são de responsabilidade das famílias,
                             amigos ou empresas funerárias que as enviam. A Tempo actua como
                             meio de divulgação.
