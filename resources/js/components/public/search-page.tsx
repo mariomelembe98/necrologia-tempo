@@ -111,13 +111,13 @@ export default function SearchPage({ type }: SearchPageProps) {
         sortBy !== 'recent';
 
     return (
-        <div className="min-h-screen py-8 sm:py-12">
+        <div className="min-h-screen bg-gradient-to-b from-sky-900 via-amber-200/60 to-slate-900 py-8 sm:py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <header className="mb-8 sm:mb-12">
-                    <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 mb-3">
+                    <h1 className="text-2xl sm:text-3xl font-semibold text-slate-50 mb-3">
                         {pageTitle}
                     </h1>
-                    <p className="text-sm text-slate-600 mb-4">
+                    <p className="text-sm text-slate-100 mb-4">
                         {pageDescription}
                     </p>
 
