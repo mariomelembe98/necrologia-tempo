@@ -11,7 +11,7 @@ class AnnouncementPlanSeeder extends Seeder
     {
         $plans = [
             [
-                'name' => 'Anúncio de falecimento 3 dias',
+                'name' => 'Anúncio de falecimento',
                 'slug' => 'falecimento-3',
                 'type' => 'comunicado',
                 'duration_days' => 3,
@@ -19,7 +19,7 @@ class AnnouncementPlanSeeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'name' => 'Anúncio de falecimento 7 dias',
+                'name' => 'Anúncio de falecimento',
                 'slug' => 'falecimento-7',
                 'type' => 'comunicado',
                 'duration_days' => 7,
@@ -27,7 +27,7 @@ class AnnouncementPlanSeeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'name' => 'Homenagem póstuma de 15 dias',
+                'name' => 'Homenagem póstuma',
                 'slug' => 'homenagem-15',
                 'type' => 'homenagem',
                 'duration_days' => 15,
