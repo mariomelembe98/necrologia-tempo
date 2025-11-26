@@ -53,6 +53,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::patch('/admin/anuncios/{announcement:slug}/status', [AnnouncementController::class, 'updateStatus'])
         ->name('admin.announcements.updateStatus');
+
+    Route::post('/admin/anuncios/{announcement:slug}/pagamentos/mpesa', [AnnouncementController::class, 'payWithMpesa'])
+        ->name('admin.announcements.pay.mpesa');
 });
 
 require __DIR__.'/settings.php';

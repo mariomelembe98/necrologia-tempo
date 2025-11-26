@@ -22,9 +22,13 @@ class Announcement extends Model
         'advertiser_id',
         'plan_id',
         'status',
+        'payment_status',
+        'payment_method',
+        'payment_reference',
         'photo_path',
         'document_path',
         'published_at',
+        'paid_at',
         'expires_at',
     ];
 
@@ -32,6 +36,7 @@ class Announcement extends Model
         'date_of_birth' => 'date',
         'date_of_death' => 'date',
         'published_at' => 'datetime',
+        'paid_at' => 'datetime',
         'expires_at' => 'datetime',
     ];
 
