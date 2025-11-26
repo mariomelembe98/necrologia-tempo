@@ -7,6 +7,7 @@ use App\Mail\AnnouncementSubmittedToAdvertiser;
 use App\Models\Advertiser;
 use App\Models\Announcement;
 use App\Models\AnnouncementPlan;
+use App\Services\MpesaService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -44,7 +45,7 @@ class AnnouncementController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, MpesaService $mpesa): RedirectResponse
     {
         $data = $request->validate(
             [
@@ -72,7 +73,7 @@ class AnnouncementController extends Controller
                 'description.required' => 'Escreva a mensagem ou detalhes do anuncio.',
                 'author.required' => 'Informe quem esta publicando o anuncio.',
                 'advertiserName.required' => 'Informe o nome completo do anunciante.',
-                'advertiserPhone.required' => 'Informe o telefone de contato do anunciante.',
+                'advertiserPhone.required' => 'Informe o telefone de contacto do anunciante.',
                 'advertiserEmail.email' => 'Informe um e-mail valido.',
                 'photo.image' => 'A foto deve ser uma imagem nos formatos JPG ou PNG.',
                 'photo.max' => 'A foto nao pode ter mais de 5MB.',
@@ -144,6 +145,8 @@ class AnnouncementController extends Controller
                 : null,
         ]);
 
+        $mpesaError = null;
+
         try {
             $toAddress = config('mail.from.address');
 
@@ -158,13 +161,48 @@ class AnnouncementController extends Controller
                     new AnnouncementSubmittedToAdvertiser($announcement),
                 );
             }
+
+            // Tenta iniciar cobranca via M‑Pesa usando o telefone do anunciante
+            if ($plan && $plan->price_mt > 0 && ! empty($advertiser->phone)) {
+                $result = $mpesa->initiatePayment(
+                    $announcement->loadMissing('plan'),
+                    $advertiser->phone,
+                );
+
+                if ($result['success']) {
+                    $announcement->payment_method = 'mpesa';
+                    $announcement->payment_status = 'pending';
+                    if (! empty($result['transactionId'])) {
+                        $announcement->payment_reference = $result['transactionId'];
+                    }
+                    $announcement->save();
+
+                    session()->flash(
+                        'success',
+                        'Anuncio submetido com sucesso. '.$result['message'],
+                    );
+                } else {
+                    $mpesaError = $result['message'];
+                }
+            }
         } catch (\Throwable $exception) {
             report($exception);
         }
 
-        return redirect()
-            ->route('public.publicar')
-            ->with('success', 'Anuncio submetido com sucesso. Em breve entraremos em contacto para finalizar a publicação.');
+        $redirect = redirect()->route('public.publicar');
+
+        if (! session()->has('success')) {
+            $redirect->with(
+                'success',
+                'Anuncio submetido com sucesso. Em breve entraremos em contacto para finalizar a publicacao.',
+            );
+        }
+
+        if ($mpesaError) {
+            $redirect->with('error', $mpesaError);
+        }
+
+        return $redirect;
     }
 
     protected function generateUniqueSlug(string $name): string
@@ -204,4 +242,40 @@ class AnnouncementController extends Controller
             ->back()
             ->with('success', 'Status do anuncio actualizado.');
     }
+
+    public function payWithMpesa(
+        Request $request,
+        Announcement $announcement,
+        MpesaService $mpesa,
+    ): RedirectResponse {
+        $data = $request->validate([
+            'phone' => 'required|string|max:30',
+        ]);
+
+        if (! $announcement->plan || ! $announcement->plan->price_mt) {
+            return redirect()
+                ->back()
+                ->with('error', 'Este anuncio nao tem um plano com valor definido.');
+        }
+
+        $result = $mpesa->initiatePayment($announcement, $data['phone']);
+
+        if ($result['success']) {
+            $announcement->payment_method = 'mpesa';
+            $announcement->payment_status = 'pending';
+            if (! empty($result['transactionId'])) {
+                $announcement->payment_reference = $result['transactionId'];
+            }
+            $announcement->save();
+
+            return redirect()
+                ->back()
+                ->with('success', $result['message']);
+        }
+
+        return redirect()
+            ->back()
+            ->with('error', $result['message']);
+    }
 }
+

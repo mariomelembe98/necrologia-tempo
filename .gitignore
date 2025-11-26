@@ -10,6 +10,8 @@
 /storage/*.key
 /storage/pail
 /vendor
+/necrologiatempo.zip
+/necrologiatempo
 .DS_Store
 .env
 .env.backup
