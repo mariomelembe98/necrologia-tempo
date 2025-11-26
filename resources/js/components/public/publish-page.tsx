@@ -85,7 +85,7 @@ const defaultPlans: Plan[] = [
 export default function PublishPage({ plans }: PublishPageProps) {
     const { errors, flash } = usePage<{
         errors: Record<string, string>;
-        flash?: { success?: string; error?: string };
+        flash?: { success?: string };
     }>().props;
     const availablePlans: Plan[] =
         plans && plans.length
@@ -320,12 +320,27 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                 {flash.success}
                             </div>
                         )}
-                        {flash?.error && (
-                            <div className="mb-4 rounded-lg border border-red-400 bg-red-50 px-4 py-3 text-sm text-red-800 shadow-sm">
-                                {flash.error}
+                        {showFreeNotice && (
+                            <div className="mb-4 flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 shadow-sm">
+                                <div className="mt-0.5 rounded-full bg-amber-100 p-1">
+                                    <Bell className="h-4 w-4 text-amber-700" />
+                                </div>
+                                <div className="flex-1">
+                                    <p>
+                                        A submissão de anúncios na Tempo Necrologia
+                                        é gratuita até <span className="font-semibold">10/12/2025</span>.
+                                        Após esta data poderemos aplicar tarifas de publicação.
+                                    </p>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowFreeNotice(false)}
+                                    className="ml-2 text-xs font-medium text-amber-800 hover:text-amber-900"
+                                >
+                                    Fechar
+                                </button>
                             </div>
                         )}
-                        
                         <h1 className="text-2xl sm:text-3xl font-semibold text-white mb-3">
                             Publicar Anúncio
                         </h1>
@@ -423,29 +438,6 @@ export default function PublishPage({ plans }: PublishPageProps) {
     return (
         <div className="min-h-screen bg-gradient-to-b from-sky-900 via-amber-200/60 to-slate-900 py-8 sm:py-12">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-
-                {showFreeNotice && (
-                            <div className="mb-4 flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 shadow-sm">
-                                <div className="mt-0.5 rounded-full bg-amber-100 p-1">
-                                    <Bell className="h-4 w-4 text-amber-700" />
-                                </div>
-                                <div className="flex-1">
-                                    <p>
-                                        A submissão de anúncios na Tempo Necrologia
-                                        é gratuita até <span className="font-semibold">10/12/2025</span>.
-                                        Após esta data poderemos aplicar tarifas de publicação.
-                                    </p>
-                                </div>
-                                <button
-                                    type="button"
-                                    onClick={() => setShowFreeNotice(false)}
-                                    className="ml-2 text-xs font-medium text-amber-800 hover:text-amber-900"
-                                >
-                                    Fechar
-                                </button>
-                            </div>
-                        )}
-
                 <div className="mb-6 rounded-3xl border border-slate-200 bg-white px-6 py-6 shadow-sm sm:px-8 sm:py-7">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <Button
