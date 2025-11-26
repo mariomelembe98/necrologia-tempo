@@ -13,6 +13,7 @@ class PublicAnnouncementController extends Controller
     public function home(): Response
     {
         $announcements = Announcement::query()
+            ->where('status', 'published')
             ->latest()
             ->limit(30)
             ->get()
@@ -27,6 +28,7 @@ class PublicAnnouncementController extends Controller
     {
         $announcements = Announcement::query()
             ->where('type', 'homenagem')
+            ->where('status', 'published')
             ->latest()
             ->limit(60)
             ->get()
@@ -41,6 +43,7 @@ class PublicAnnouncementController extends Controller
     {
         $announcements = Announcement::query()
             ->where('type', 'comunicado')
+            ->where('status', 'published')
             ->latest()
             ->limit(60)
             ->get()
@@ -54,6 +57,7 @@ class PublicAnnouncementController extends Controller
     public function pesquisar(): Response
     {
         $announcements = Announcement::query()
+            ->where('status', 'published')
             ->latest()
             ->limit(60)
             ->get()
@@ -78,7 +82,12 @@ class PublicAnnouncementController extends Controller
 
     public function show(Announcement $announcement): Response
     {
+        if ($announcement->status !== 'published') {
+            abort(404);
+        }
+
         $announcements = Announcement::query()
+            ->where('status', 'published')
             ->latest()
             ->limit(30)
             ->get();
