@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AnnouncementSubmitted;
 use App\Models\Advertiser;
 use App\Models\Announcement;
 use App\Models\AnnouncementPlan;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -133,6 +135,18 @@ class AnnouncementController extends Controller
                 ? now()->addDays($plan->duration_days)
                 : null,
         ]);
+
+        try {
+            $toAddress = config('mail.from.address');
+
+            if ($toAddress) {
+                Mail::to($toAddress)->send(
+                    new AnnouncementSubmitted($announcement),
+                );
+            }
+        } catch (\Throwable $exception) {
+            report($exception);
+        }
 
         return redirect()
             ->route('public.anuncio.show', $announcement)
