@@ -21,10 +21,10 @@
                         </p>
 
                         <p style="margin:0 0 16px; font-size:14px; color:#3f3f46;">
-                            Recebemos o seu pedido de anuncio necrologico no site {{ config('app.name') }}. A nossa equipa vai rever as informacoes enviadas e entrara em contacto para confirmar os detalhes e o pagamento antes da publicacao.
+                            Recebemos o seu pedido de anúncio necrológico no site <a href="{{ config('app.url') }}">{{ config('app.name') }}</a> . A nossa equipa vai rever as informações enviadas e entrara em contacto para confirmar os detalhes e o pagamento antes da publicação.
                         </p>
 
-                        <h2 style="margin:24px 0 8px; font-size:16px; color:#18181b;">Resumo do seu anuncio</h2>
+                        <h2 style="margin:24px 0 8px; font-size:16px; color:#18181b;">Resumo do seu anúncio</h2>
                         <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="font-size:14px; color:#18181b; border-collapse:collapse;">
                             <tr>
                                 <td style="padding:4px 16px 4px 0; width:160px; color:#52525b; font-weight:500; white-space:nowrap; vertical-align:top;">Tipo</td>
@@ -89,7 +89,7 @@
                         </table>
 
                         <p style="margin:24px 0 0; font-size:12px; color:#a1a1aa;">
-                            Esta mensagem foi enviada automaticamente pelo sistema {{ config('app.name') }} apos a submissao do seu anuncio. Se nao reconhece este pedido, por favor ignore este email.
+                            Esta mensagem foi enviada automaticamente pelo sistema <a href="{{ config('app.url') }}">{{ config('app.name') }}</a> após a submissão do seu anúncio. Se não reconhece este pedido, por favor ignore este email.
                         </p>
                     </td>
                 </tr>
