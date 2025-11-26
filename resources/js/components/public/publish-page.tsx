@@ -794,7 +794,7 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                                         EMOLA
                                                     </div>
                                                     <div className="mt-1 text-slate-900">
-                                                        +258 XX XXX XXXX
+                                                        +258 86 801 0880
                                                     </div>
                                                 </div>
                                                 <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs sm:text-sm">
