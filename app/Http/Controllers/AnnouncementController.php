@@ -157,7 +157,7 @@ class AnnouncementController extends Controller
 
         return redirect()
             ->route('public.publicar')
-            ->with('success', 'Anúncio enviado para revisão.');
+            ->with('success', 'Anuncio submetido com sucesso. Em breve entraremos em contacto para finalizar a publicação.');
     }
 
     protected function generateUniqueSlug(string $name): string
