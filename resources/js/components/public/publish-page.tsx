@@ -83,7 +83,10 @@ const defaultPlans: Plan[] = [
 ];
 
 export default function PublishPage({ plans }: PublishPageProps) {
-    const { errors } = usePage<{ errors: Record<string, string> }>().props;
+    const { errors, flash } = usePage<{
+        errors: Record<string, string>;
+        flash?: { success?: string };
+    }>().props;
     const availablePlans: Plan[] =
         plans && plans.length
             ? plans.map((plan) => ({
@@ -106,6 +109,7 @@ export default function PublishPage({ plans }: PublishPageProps) {
     const [documentFile, setDocumentFile] = useState<File | null>(null);
     const [responsibilityAccepted, setResponsibilityAccepted] =
         useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         dateOfBirth: '',
@@ -206,6 +210,10 @@ export default function PublishPage({ plans }: PublishPageProps) {
     const handleSubmit = (event: FormEvent) => {
         event.preventDefault();
 
+        if (isSubmitting) {
+            return;
+        }
+
         if (!selectedPlan) {
             alert('Selecione um plano para continuar.');
             return;
@@ -244,25 +252,61 @@ export default function PublishPage({ plans }: PublishPageProps) {
         const finalType: AnnouncementType =
             selectedType ?? 'comunicado';
 
-        router.post('/anuncios', {
-            type: finalType,
-            name: formData.name,
-            dateOfBirth: formData.dateOfBirth || undefined,
-            dateOfDeath: formData.dateOfDeath,
-            location: formData.location,
-            description: formData.description,
-            author: formData.author,
-            advertiserName: formData.advertiserName,
-            advertiserPhone: formData.advertiserPhone,
-            advertiserEmail: formData.advertiserEmail || undefined,
-            advertiserDocument: 'uploaded',
-            plan: selectedPlan.name,
-            planPrice: selectedPlan.price,
-            planDuration: selectedPlan.duration,
-            responsibilityAccepted,
-            photo: photoFile ?? undefined,
-            document: documentFile ?? undefined,
-        });
+        setIsSubmitting(true);
+
+        router.post(
+            '/anuncios',
+            {
+                type: finalType,
+                name: formData.name,
+                dateOfBirth: formData.dateOfBirth || undefined,
+                dateOfDeath: formData.dateOfDeath,
+                location: formData.location,
+                description: formData.description,
+                author: formData.author,
+                advertiserName: formData.advertiserName,
+                advertiserPhone: formData.advertiserPhone,
+                advertiserEmail: formData.advertiserEmail || undefined,
+                advertiserDocument: 'uploaded',
+                plan: selectedPlan.name,
+                planPrice: selectedPlan.price,
+                planDuration: selectedPlan.duration,
+                responsibilityAccepted,
+                photo: photoFile ?? undefined,
+                document: documentFile ?? undefined,
+            },
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setFormData({
+                        name: '',
+                        dateOfBirth: '',
+                        dateOfDeath: '',
+                        location: '',
+                        description: '',
+                        author: '',
+                        advertiserName: '',
+                        advertiserPhone: '',
+                        advertiserEmail: '',
+                    });
+                    setPhotoName(null);
+                    setPhotoFile(null);
+                    setDocumentName(null);
+                    setDocumentFile(null);
+                    setResponsibilityAccepted(false);
+
+                    if (typeof window !== 'undefined') {
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth',
+                        });
+                    }
+                },
+                onFinish: () => {
+                    setIsSubmitting(false);
+                },
+            },
+        );
     };
 
     if (!selectedPlan) {
@@ -270,6 +314,11 @@ export default function PublishPage({ plans }: PublishPageProps) {
             <div className="min-h-screen bg-gradient-to-b from-sky-900 via-amber-200/60 to-slate-900 py-8 sm:py-12">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     <header className="mb-8">
+                        {flash?.success && (
+                            <div className="mb-4 rounded-lg border border-emerald-500/40 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 shadow-sm">
+                                {flash.success}
+                            </div>
+                        )}
                         <h1 className="text-2xl sm:text-3xl font-semibold text-white mb-3">
                             Publicar Anúncio
                         </h1>
@@ -857,6 +906,7 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                         </Button>
                                         <Button
                                             type="submit"
+                                            disabled={isSubmitting}
                                             className={`text-white ${selectedType === 'homenagem'
                                                 ? 'bg-rose-600 hover:bg-rose-700'
                                                 : selectedType === 'comunicado'

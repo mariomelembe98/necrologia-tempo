@@ -156,8 +156,8 @@ class AnnouncementController extends Controller
         }
 
         return redirect()
-            ->route('public.anuncio.show', $announcement)
-            ->with('success', 'Anuncio enviado para revisao.');
+            ->route('public.publicar')
+            ->with('success', 'Anúncio enviado para revisão.');
     }
 
     protected function generateUniqueSlug(string $name): string
