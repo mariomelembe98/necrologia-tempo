@@ -394,7 +394,7 @@ export default function PublishPage({ plans }: PublishPageProps) {
                         </div>
                         <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs text-slate-700 sm:text-sm">
                             <Mail className="h-4 w-4 text-slate-500" />
-                            <span>Email: <a href="mailto:info@tempo.co.mz">info@tempo.co.mz</a></span>
+                            <span>Email: <a href="mailto:necrologia@tempo.co.mz">necrologia@tempo.co.mz</a></span>
                         </div>
                     </div>
                 </div>
