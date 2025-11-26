@@ -57,28 +57,27 @@ class AnnouncementController extends Controller
                 'plan' => 'nullable|string|max:255',
                 'advertiserName' => 'required|string|max:255',
                 'advertiserPhone' => 'required|string|max:255',
-                'advertiserEmail' => 'required|email|max:255',
+                'advertiserEmail' => 'nullable|email|max:255',
                 'photo' => 'nullable|image|max:5120',
                 'document' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
             ],
             [
-                'type.required' => 'Selecione o tipo de anúncio.',
+                'type.required' => 'Selecione o tipo de anuncio.',
                 'name.required' => 'Informe o nome da pessoa homenageada/falecida.',
-                'dateOfBirth.date' => 'A data de nascimento deve ser uma data válida.',
-                'dateOfDeath.date' => 'A data de falecimento deve ser uma data válida.',
-                'dateOfDeath.after_or_equal' => 'A data de falecimento deve ser igual ou posterior à data de nascimento.',
-                'location.required' => 'Informe o local (cidade, província).',
-                'description.required' => 'Escreva a mensagem ou detalhes do anúncio.',
-                'author.required' => 'Informe quem está publicando o anúncio.',
+                'dateOfBirth.date' => 'A data de nascimento deve ser uma data valida.',
+                'dateOfDeath.date' => 'A data de falecimento deve ser uma data valida.',
+                'dateOfDeath.after_or_equal' => 'A data de falecimento deve ser igual ou posterior a data de nascimento.',
+                'location.required' => 'Informe o local (cidade, provincia).',
+                'description.required' => 'Escreva a mensagem ou detalhes do anuncio.',
+                'author.required' => 'Informe quem esta publicando o anuncio.',
                 'advertiserName.required' => 'Informe o nome completo do anunciante.',
                 'advertiserPhone.required' => 'Informe o telefone de contato do anunciante.',
-                'advertiserEmail.required' => 'Informe o e-mail do anunciante.',
-                'advertiserEmail.email' => 'Informe um e-mail válido.',
+                'advertiserEmail.email' => 'Informe um e-mail valido.',
                 'photo.image' => 'A foto deve ser uma imagem nos formatos JPG ou PNG.',
-                'photo.max' => 'A foto não pode ter mais de 5MB.',
-                'document.required' => 'Envie um documento de identificação do anunciante.',
+                'photo.max' => 'A foto nao pode ter mais de 5MB.',
+                'document.required' => 'Envie um documento de identificacao do anunciante.',
                 'document.mimes' => 'O documento deve ser JPG, PNG ou PDF.',
-                'document.max' => 'O documento não pode ter mais de 5MB.',
+                'document.max' => 'O documento nao pode ter mais de 5MB.',
             ],
         );
 
@@ -91,15 +90,23 @@ class AnnouncementController extends Controller
                 ->first();
         }
 
-        $advertiser = Advertiser::firstOrCreate(
-            [
-                'email' => $data['advertiserEmail'],
-            ],
-            [
-                'name' => $data['advertiserName'],
-                'phone' => $data['advertiserPhone'],
-            ],
-        );
+        $advertiserData = [
+            'name' => $data['advertiserName'],
+            'phone' => $data['advertiserPhone'],
+            'email' => $data['advertiserEmail'] ?? null,
+        ];
+
+        if (! empty($data['advertiserEmail'])) {
+            $advertiser = Advertiser::firstOrCreate(
+                ['email' => $data['advertiserEmail']],
+                $advertiserData,
+            );
+        } else {
+            $advertiser = Advertiser::firstOrCreate(
+                ['phone' => $data['advertiserPhone']],
+                $advertiserData,
+            );
+        }
 
         $photoPath = null;
         if ($request->hasFile('photo')) {
@@ -150,7 +157,7 @@ class AnnouncementController extends Controller
 
         return redirect()
             ->route('public.anuncio.show', $announcement)
-            ->with('success', 'Anúncio enviado para revisão.');
+            ->with('success', 'Anuncio enviado para revisao.');
     }
 
     protected function generateUniqueSlug(string $name): string
@@ -188,6 +195,7 @@ class AnnouncementController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', 'Status do anúncio atualizado.');
+            ->with('success', 'Status do anuncio actualizado.');
     }
 }
+

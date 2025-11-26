@@ -226,7 +226,6 @@ export default function PublishPage({ plans }: PublishPageProps) {
         if (
             !formData.advertiserName ||
             !formData.advertiserPhone ||
-            !formData.advertiserEmail ||
             !documentName
         ) {
             alert(
@@ -255,7 +254,7 @@ export default function PublishPage({ plans }: PublishPageProps) {
             author: formData.author,
             advertiserName: formData.advertiserName,
             advertiserPhone: formData.advertiserPhone,
-            advertiserEmail: formData.advertiserEmail,
+            advertiserEmail: formData.advertiserEmail || undefined,
             advertiserDocument: 'uploaded',
             plan: selectedPlan.name,
             planPrice: selectedPlan.price,
@@ -690,7 +689,7 @@ export default function PublishPage({ plans }: PublishPageProps) {
 
                                     <div className="space-y-2">
                                         <Label htmlFor="advertiserEmail">
-                                            E-mail *
+                                            E-mail (opcional)
                                         </Label>
                                         <Input
                                             id="advertiserEmail"
@@ -699,7 +698,6 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                             value={formData.advertiserEmail}
                                             onChange={handleChange}
                                             placeholder="seu@email.com"
-                                            required
                                         />
                                     </div>
                                 </div>
@@ -807,7 +805,7 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                                 </div>
                                                 <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs sm:text-sm">
                                                     <div className="text-[11px] font-semibold tracking-wide text-slate-500">
-                                                        TRANSFERENCIA
+                                                        TRANSFERÊNCIA BANCÁRIA
                                                     </div>
                                                     <div className="mt-1 text-slate-900">
                                                         NIB/Conta XXXX XXXX XXXX
@@ -815,7 +813,7 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                                 </div>
                                             </div>
                                             <p className="mt-3 text-[11px] text-slate-500 sm:text-xs">
-                                                O pagamento deve ser efetuado apos a aprovacao do anuncio. Entraremos em contacto com os dados de confirmacao.
+                                                O pagamento deve ser efectuado após a aprovação do anúncio. Entraremos em contacto com os dados de confirmação.
                                             </p>
                                         </div>
                                     </div>
@@ -876,11 +874,11 @@ export default function PublishPage({ plans }: PublishPageProps) {
                             </div>
                             <div className="text-xs text-slate-500 mt-4">
                                 Ao submeter este formulário, você concorda com os nossos{' '}
-                                <a href="/terms" className="underline">
+                                <a href="#" className="underline">
                                     Termos de Serviço
                                 </a>{' '}
                                 e{' '}
-                                <a href="/privacy" className="underline">
+                                <a href="#" className="underline">
                                     Política de Privacidade
                                 </a>
                                 .
