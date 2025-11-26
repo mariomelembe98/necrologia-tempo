@@ -327,7 +327,7 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                 </div>
                                 <div className="flex-1">
                                     <p>
-                                        Neste momento a submissão de anúncios na Tempo Necrologia
+                                        A submissão de anúncios na Tempo Necrologia
                                         é gratuita até <span className="font-semibold">10/12/2025</span>.
                                         Após esta data poderemos aplicar tarifas de publicação.
                                     </p>
