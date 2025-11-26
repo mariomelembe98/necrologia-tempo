@@ -110,6 +110,7 @@ export default function PublishPage({ plans }: PublishPageProps) {
     const [responsibilityAccepted, setResponsibilityAccepted] =
         useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showFreeNotice, setShowFreeNotice] = useState(true);
     const [formData, setFormData] = useState({
         name: '',
         dateOfBirth: '',
@@ -317,6 +318,27 @@ export default function PublishPage({ plans }: PublishPageProps) {
                         {flash?.success && (
                             <div className="mb-4 rounded-lg border border-emerald-500/40 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 shadow-sm">
                                 {flash.success}
+                            </div>
+                        )}
+                        {showFreeNotice && (
+                            <div className="mb-4 flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 shadow-sm">
+                                <div className="mt-0.5 rounded-full bg-amber-100 p-1">
+                                    <Bell className="h-4 w-4 text-amber-700" />
+                                </div>
+                                <div className="flex-1">
+                                    <p>
+                                        Neste momento a submissão de anúncios na Tempo Necrologia
+                                        é gratuita até <span className="font-semibold">10/12/2025</span>.
+                                        Após esta data poderemos aplicar tarifas de publicação.
+                                    </p>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowFreeNotice(false)}
+                                    className="ml-2 text-xs font-medium text-amber-800 hover:text-amber-900"
+                                >
+                                    Fechar
+                                </button>
                             </div>
                         )}
                         <h1 className="text-2xl sm:text-3xl font-semibold text-white mb-3">

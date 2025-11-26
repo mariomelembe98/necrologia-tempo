@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\AnnouncementSubmitted;
+use App\Mail\AnnouncementSubmittedToAdvertiser;
 use App\Models\Advertiser;
 use App\Models\Announcement;
 use App\Models\AnnouncementPlan;
@@ -151,6 +152,12 @@ class AnnouncementController extends Controller
                     new AnnouncementSubmitted($announcement),
                 );
             }
+
+            if (! empty($advertiser->email)) {
+                Mail::to($advertiser->email)->send(
+                    new AnnouncementSubmittedToAdvertiser($announcement),
+                );
+            }
         } catch (\Throwable $exception) {
             report($exception);
         }
@@ -198,4 +205,3 @@ class AnnouncementController extends Controller
             ->with('success', 'Status do anuncio actualizado.');
     }
 }
-
