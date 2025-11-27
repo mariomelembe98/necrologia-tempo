@@ -7,8 +7,6 @@ use App\Http\Controllers\AdminPlanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PublicAnnouncementController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-use Laravel\Fortify\Features;
 
 Route::get('/', [PublicAnnouncementController::class, 'home'])->name('home');
 
