@@ -31,6 +31,7 @@
         </style>
 
         <title inertia>{{ config('app.name', 'Tempo Necrologia') }}</title>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <link rel="icon" href="images/favicon.ico" sizes="any">
         <link rel="icon" href="images/favicon.svg" type="image/svg+xml">

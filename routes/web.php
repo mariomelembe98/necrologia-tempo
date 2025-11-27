@@ -4,7 +4,9 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AdminAnnouncementController;
 use App\Http\Controllers\AdminAdvertiserController;
 use App\Http\Controllers\AdminPlanController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MpesaController;
 use App\Http\Controllers\PublicAnnouncementController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +29,12 @@ Route::get('/anuncio/{announcement:slug}', [PublicAnnouncementController::class,
 
 Route::post('/anuncios', [AnnouncementController::class, 'store'])
     ->name('announcements.store');
+
+Route::get('/checkout/{announcement:slug}', [CheckoutController::class, 'show'])
+    ->name('checkout.show');
+
+Route::post('/checkout/{announcement:slug}/pay', [CheckoutController::class, 'pay'])
+    ->name('checkout.pay');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');

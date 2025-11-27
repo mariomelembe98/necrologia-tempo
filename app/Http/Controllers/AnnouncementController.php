@@ -145,8 +145,6 @@ class AnnouncementController extends Controller
                 : null,
         ]);
 
-        $mpesaError = null;
-
         try {
             $toAddress = config('mail.from.address');
 
@@ -161,48 +159,13 @@ class AnnouncementController extends Controller
                     new AnnouncementSubmittedToAdvertiser($announcement),
                 );
             }
-
-            // Tenta iniciar cobranca via M‑Pesa usando o telefone do anunciante
-            if ($plan && $plan->price_mt > 0 && ! empty($advertiser->phone)) {
-                $result = $mpesa->initiatePayment(
-                    $announcement->loadMissing('plan'),
-                    $advertiser->phone,
-                );
-
-                if ($result['success']) {
-                    $announcement->payment_method = 'mpesa';
-                    $announcement->payment_status = 'pending';
-                    if (! empty($result['transactionId'])) {
-                        $announcement->payment_reference = $result['transactionId'];
-                    }
-                    $announcement->save();
-
-                    session()->flash(
-                        'success',
-                        'Anuncio submetido com sucesso. '.$result['message'],
-                    );
-                } else {
-                    $mpesaError = $result['message'];
-                }
-            }
         } catch (\Throwable $exception) {
             report($exception);
         }
 
-        $redirect = redirect()->route('public.publicar');
-
-        if (! session()->has('success')) {
-            $redirect->with(
-                'success',
-                'Anuncio submetido com sucesso. Em breve entraremos em contacto para finalizar a publicacao.',
-            );
-        }
-
-        if ($mpesaError) {
-            $redirect->with('error', $mpesaError);
-        }
-
-        return $redirect;
+        return redirect()
+            ->route('checkout.show', $announcement)
+            ->with('success', 'Anuncio criado! Complete o pagamento para publicar.');
     }
 
     protected function generateUniqueSlug(string $name): string
@@ -278,4 +241,3 @@ class AnnouncementController extends Controller
             ->with('error', $result['message']);
     }
 }
-
