@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\AnnouncementSubmitted;
 use App\Mail\AnnouncementModerationRequired;
+use App\Mail\AnnouncementStatusNotification;
+use App\Mail\AnnouncementSubmitted;
 use App\Mail\AnnouncementSubmittedToAdvertiser;
 use App\Models\Advertiser;
 use App\Models\Announcement;
@@ -219,6 +220,7 @@ class AnnouncementController extends Controller
             'status' => 'required|string|in:pending,published,rejected,archived',
         ]);
 
+        $previousStatus = $announcement->status;
         $announcement->status = $data['status'];
 
         if ($data['status'] === 'published' && ! $announcement->published_at) {
@@ -226,6 +228,30 @@ class AnnouncementController extends Controller
         }
 
         $announcement->save();
+
+        if (
+            $previousStatus !== 'published' &&
+            $data['status'] === 'published'
+        ) {
+            $announcement->loadMissing('advertiser');
+            $advertiserEmail = optional($announcement->advertiser)->email;
+
+            if ($advertiserEmail) {
+                try {
+                    Mail::to($advertiserEmail)->send(
+                        new AnnouncementStatusNotification(
+                            $announcement,
+                            'Anúncio aprovado',
+                            'O seu anúncio foi revisado e agora está publicado.',
+                            'Ver anúncio publicado',
+                            route('public.anuncio.show', $announcement),
+                        ),
+                    );
+                } catch (\Throwable $exception) {
+                    report($exception);
+                }
+            }
+        }
 
         return redirect()
             ->back()

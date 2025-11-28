@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AnnouncementStatusNotification;
 use App\Models\Announcement;
 use App\Services\MpesaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -54,6 +56,25 @@ class CheckoutController extends Controller
                 'status' => 'published',
                 'published_at' => $announcement->published_at ?? now(),
             ]);
+
+            $announcement->loadMissing('advertiser');
+            $advertiserEmail = optional($announcement->advertiser)->email;
+
+            if ($advertiserEmail) {
+                try {
+                    Mail::to($advertiserEmail)->send(
+                        new AnnouncementStatusNotification(
+                            $announcement,
+                            'Pagamento confirmado',
+                            'Recebemos o pagamento e o seu anúncio já está publicado.',
+                            'Ver anúncio publicado',
+                            route('public.anuncio.show', $announcement),
+                        ),
+                    );
+                } catch (\Throwable $exception) {
+                    report($exception);
+                }
+            }
 
             return response()->json(['success' => true, 'message' => $result['message']]);
         }

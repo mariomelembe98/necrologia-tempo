@@ -22,7 +22,7 @@ class AnnouncementSubmittedToAdvertiser extends Mailable
     public function build(): self
     {
         return $this
-            ->subject('Recebemos o seu anuncio na Tempo Necrologia')
+            ->subject('Recebemos o seu anuncio na '.config('app.name'))
             ->view('emails.announcements.submitted_to_advertiser', [
                 'announcement' => $this->announcement,
             ]);
