@@ -76,6 +76,12 @@ export default function Dashboard({
 
     const totalTrend = trend.reduce((sum, point) => sum + point.count, 0);
     const averageTrend = trend.length > 0 ? totalTrend / trend.length : 0;
+    const lastDayVolume =
+        trend.length > 0 ? trend[trend.length - 1].count : 0;
+    const conversionRate =
+        stats.pending + stats.published > 0
+            ? stats.published / (stats.pending + stats.published)
+            : 0;
 
     const latestAnnouncements = useMemo(() => {
         const sorted = [...recentAnnouncements].sort((a, b) => {
@@ -349,6 +355,51 @@ export default function Dashboard({
                         </div>
                         <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
                             Volume de anuncios criados por dia.
+                        </p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-sidebar-border/70 dark:bg-sidebar">
+                        <p className="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                            Volume diário
+                        </p>
+                        <p className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-50">
+                            {lastDayVolume}
+                        </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                            Último dia registrado
+                        </p>
+                        <p className="mt-2 text-xs text-slate-600 dark:text-slate-300">
+                            Média dos últimos {trend.length} dias: {averageTrend.toFixed(1)}
+                        </p>
+                    </div>
+                    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-sidebar-border/70 dark:bg-sidebar">
+                        <p className="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                            Taxa de conversão
+                        </p>
+                        <p className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-50">
+                            {(conversionRate * 100).toFixed(1)}%
+                        </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                            {stats.pending + stats.published} pendentes + publicados
+                        </p>
+                        <p className="mt-2 text-xs text-slate-600 dark:text-slate-300">
+                            Publicados ÷ (pendentes + publicados)
+                        </p>
+                    </div>
+                    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-sidebar-border/70 dark:bg-sidebar">
+                        <p className="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                            Anúncios expirados
+                        </p>
+                        <p className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-50">
+                            {stats.expired}
+                        </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                            Publicados com `expires_at` no passado
+                        </p>
+                        <p className="mt-2 text-xs text-slate-600 dark:text-slate-300">
+                            Expirações próximas: {stats.expiringSoon}
                         </p>
                     </div>
                 </div>
