@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Announcement;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -45,6 +46,38 @@ class DashboardController extends Controller
             ->where('type', 'outros')
             ->count();
 
+        $paymentPending = (clone $statsQuery)
+            ->where('payment_status', 'pending')
+            ->count();
+        $paymentPaid = (clone $statsQuery)
+            ->where('payment_status', 'paid')
+            ->count();
+        $paymentFailed = (clone $statsQuery)
+            ->where('payment_status', 'failed')
+            ->count();
+
+        $now = Carbon::now();
+
+        $expiringSoon = (clone $statsQuery)
+            ->where('status', 'published')
+            ->whereNotNull('expires_at')
+            ->whereBetween('expires_at', [
+                $now,
+                $now->copy()->addDays(7),
+            ])
+            ->count();
+
+        $expired = (clone $statsQuery)
+            ->where('status', 'published')
+            ->whereNotNull('expires_at')
+            ->where('expires_at', '<', $now)
+            ->count();
+
+        $pendingPromotion = (clone $statsQuery)
+            ->where('status', 'pending')
+            ->where('created_at', '<=', Announcement::promotionEndsAt())
+            ->count();
+
         $recentAnnouncements = (clone $baseQuery)
             ->with(['advertiser', 'plan'])
             ->latest()
@@ -82,6 +115,12 @@ class DashboardController extends Controller
                 'homenagens' => $homenagens,
                 'comunicados' => $comunicados,
                 'outros' => $outros,
+                'paymentPending' => $paymentPending,
+                'paymentPaid' => $paymentPaid,
+                'paymentFailed' => $paymentFailed,
+                'expiringSoon' => $expiringSoon,
+                'expired' => $expired,
+                'pendingPromotion' => $pendingPromotion,
             ],
             'recentAnnouncements' => $recentAnnouncements,
             'trend' => $trend,

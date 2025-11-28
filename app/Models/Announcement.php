@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 class Announcement extends Model
 {
@@ -53,5 +54,17 @@ class Announcement extends Model
     public function plan(): BelongsTo
     {
         return $this->belongsTo(AnnouncementPlan::class, 'plan_id');
+    }
+
+    public static function promotionEndsAt(): Carbon
+    {
+        return Carbon::parse(config('announcements.promotion_end'));
+    }
+
+    public static function isPromotionActive(?Carbon $when = null): bool
+    {
+        $when ??= now();
+
+        return $when->lte(static::promotionEndsAt());
     }
 }

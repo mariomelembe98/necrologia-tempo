@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\AnnouncementSubmitted;
+use App\Mail\AnnouncementModerationRequired;
 use App\Mail\AnnouncementSubmittedToAdvertiser;
 use App\Models\Advertiser;
 use App\Models\Announcement;
@@ -160,11 +161,28 @@ class AnnouncementController extends Controller
                     new AnnouncementSubmittedToAdvertiser($announcement),
                 );
             }
+
+            if (Announcement::isPromotionActive()) {
+                $moderationRecipients = array_filter(array_map(
+                    fn ($value) => trim($value),
+                    explode(',', (string) config('announcements.moderation_email', '')),
+                ));
+
+                if (empty($moderationRecipients) && $toAddress) {
+                    $moderationRecipients = [$toAddress];
+                }
+
+                foreach ($moderationRecipients as $recipient) {
+                    Mail::to($recipient)->send(
+                        new AnnouncementModerationRequired($announcement),
+                    );
+                }
+            }
         } catch (\Throwable $exception) {
             report($exception);
         }
 
-        $freeUntil = Carbon::create(2025, 12, 31, 23, 59, 59);
+        $freeUntil = Announcement::promotionEndsAt();
         if (now()->lte($freeUntil)) {
             return redirect()
                 ->route('public.publicar')

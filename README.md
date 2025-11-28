@@ -221,6 +221,8 @@ Editar o `.env` com:
 - `MPESA_SERVICE_PROVIDER_CODE` (ex: `171717`)
 - `MPESA_ENV` (`sandbox` ou `production`)
 - `MPESA_TIMEOUT` (tempo limite em segundos para chamadas M-Pesa)
+- `ANNOUNCEMENTS_PROMOTION_END` (data/hora ISO; define o fim da promoção gratuita)
+- `ANNOUNCEMENTS_MODERATION_EMAIL` (lista separada por vírgulas de endereços que recebem avisos de revisão)
 - Secao de mail, por exemplo:
 
 ```env

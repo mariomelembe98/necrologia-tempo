@@ -13,6 +13,12 @@ interface DashboardStats {
     homenagens: number;
     comunicados: number;
     outros: number;
+    paymentPending: number;
+    paymentPaid: number;
+    paymentFailed: number;
+    expiringSoon: number;
+    expired: number;
+    pendingPromotion: number;
 }
 
 interface RecentAnnouncement {
@@ -111,6 +117,18 @@ export default function Dashboard({
                         <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                             Visao geral dos anuncios, tipos e periodos.
                         </p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                            {stats.pendingPromotion > 0 ? (
+                                <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[11px] font-semibold text-amber-700">
+                                    Revisar {stats.pendingPromotion} anúncio
+                                    {stats.pendingPromotion > 1 ? 's' : ''} da promoção
+                                </span>
+                            ) : (
+                                <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-semibold text-emerald-700">
+                                    Nenhum anúncio promocional pendente
+                                </span>
+                            )}
+                        </div>
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
                         <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
@@ -167,7 +185,7 @@ export default function Dashboard({
                 </div>
 
                 {/* Stat cards */}
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                     <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-sidebar-border/70 dark:bg-sidebar">
                         <div className="flex items-center justify-between">
                             <div>
@@ -204,6 +222,68 @@ export default function Dashboard({
                         <p className="mt-2 text-xs text-amber-800/80 dark:text-amber-200/80">
                             Anuncios aguardando aprovacao ou publicacao.
                         </p>
+                    </div>
+
+                    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-sidebar-border/70 dark:bg-sidebar">
+                        <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                            Pagamentos
+                        </p>
+                        <div className="mt-3 space-y-1 text-sm text-slate-800 dark:text-slate-100">
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs text-slate-500 dark:text-slate-400">
+                                    Pendentes
+                                </span>
+                                <span className="text-base font-semibold text-slate-900 dark:text-slate-50">
+                                    {stats.paymentPending}
+                                </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs text-slate-500 dark:text-slate-400">
+                                    Pagos
+                                </span>
+                                <span className="text-base font-semibold text-emerald-700">
+                                    {stats.paymentPaid}
+                                </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs text-slate-500 dark:text-slate-400">
+                                    Falhos
+                                </span>
+                                <span className="text-base font-semibold text-red-600">
+                                    {stats.paymentFailed}
+                                </span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                Inclui notificacoes de checkout e M-Pesa.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-sidebar-border/70 dark:bg-sidebar">
+                        <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                            Expirações
+                        </p>
+                        <div className="mt-3 space-y-1 text-sm text-slate-800 dark:text-slate-100">
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs text-slate-500 dark:text-slate-400">
+                                    Próximos 7 dias
+                                </span>
+                                <span className="text-base font-semibold text-amber-700">
+                                    {stats.expiringSoon}
+                                </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs text-slate-500 dark:text-slate-400">
+                                    Expirados
+                                </span>
+                                <span className="text-base font-semibold text-red-600">
+                                    {stats.expired}
+                                </span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                Considera apenas anúncios publicados com data definida.
+                            </p>
+                        </div>
                     </div>
 
                     <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-sidebar-border/70 dark:bg-sidebar">
