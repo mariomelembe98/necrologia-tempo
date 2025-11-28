@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Announcement;
 use App\Models\AnnouncementPlan;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -12,8 +13,7 @@ class PublicAnnouncementController extends Controller
 {
     public function home(): Response
     {
-        $announcements = Announcement::query()
-            ->where('status', 'published')
+        $announcements = $this->activeQuery()
             ->latest()
             ->limit(30)
             ->get()
@@ -26,9 +26,8 @@ class PublicAnnouncementController extends Controller
 
     public function homenagens(): Response
     {
-        $announcements = Announcement::query()
+        $announcements = $this->activeQuery()
             ->where('type', 'homenagem')
-            ->where('status', 'published')
             ->latest()
             ->limit(60)
             ->get()
@@ -41,9 +40,8 @@ class PublicAnnouncementController extends Controller
 
     public function comunicados(): Response
     {
-        $announcements = Announcement::query()
+        $announcements = $this->activeQuery()
             ->where('type', 'comunicado')
-            ->where('status', 'published')
             ->latest()
             ->limit(60)
             ->get()
@@ -56,8 +54,7 @@ class PublicAnnouncementController extends Controller
 
     public function pesquisar(): Response
     {
-        $announcements = Announcement::query()
-            ->where('status', 'published')
+        $announcements = $this->activeQuery()
             ->latest()
             ->limit(60)
             ->get()
@@ -86,8 +83,11 @@ class PublicAnnouncementController extends Controller
             abort(404);
         }
 
-        $announcements = Announcement::query()
-            ->where('status', 'published')
+        if (! $this->isActive($announcement)) {
+            abort(404);
+        }
+
+        $announcements = $this->activeQuery()
             ->latest()
             ->limit(30)
             ->get();
@@ -95,6 +95,7 @@ class PublicAnnouncementController extends Controller
         if (! $announcements->contains('id', $announcement->id)) {
             $announcements->prepend($announcement);
         }
+
 
         $mapped = $announcements
             ->map(fn (Announcement $item) => $this->mapAnnouncement($item));
@@ -128,5 +129,21 @@ class PublicAnnouncementController extends Controller
             'createdAt' => optional($announcement->created_at)?->toIso8601String(),
             'expiresAt' => optional($announcement->expires_at)?->toIso8601String(),
         ];
+    }
+
+    private function activeQuery()
+    {
+        return Announcement::query()
+            ->where('status', 'published')
+            ->where(function ($query) {
+                $query->whereNull('expires_at')
+                    ->orWhere('expires_at', '>', Carbon::now());
+            });
+    }
+
+    private function isActive(Announcement $announcement): bool
+    {
+        return $announcement->status === 'published'
+            && ($announcement->expires_at === null || $announcement->expires_at > Carbon::now());
     }
 }

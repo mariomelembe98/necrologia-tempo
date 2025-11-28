@@ -13,8 +13,7 @@ class MpesaService
 {
     public function __construct(
         protected HttpFactory $http,
-    ) {
-    }
+    ) {}
 
     /**
      * Inicia um pagamento C2B via M‑Pesa.
@@ -32,7 +31,7 @@ class MpesaService
         if (empty($config['host']) || empty($config['api_key']) || empty($config['service_provider_code'])) {
             return [
                 'success' => false,
-                'message' => 'MPesa nao esta configurado. Verifique o ficheiro .env.',
+                'message' => 'M-Pesa nao esta configurado. Verifique o ficheiro .env.',
                 'transactionId' => null,
             ];
         }
@@ -75,7 +74,7 @@ class MpesaService
         $timeout = max(60, (int) ($config['timeout'] ?? 60));
         set_time_limit($timeout + 10);
 
-        Log::info('MPesa request', [
+        Log::info('M-Pesa request', [
             'url' => $url,
             'payload' => $payload,
             'headers' => [
@@ -88,16 +87,16 @@ class MpesaService
 
         try {
 
-        /** @var Response $response */
-        $response = $this->http
-            ->withHeaders([
-                'Origin' => $config['origin'] ?? 'developer.mpesa.vm.co.mz',
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer '.$config['api_key'],
-            ])
-            ->withOptions(['verify' => $verify])
-            ->timeout(max(60, (int) $config['timeout']))
-            ->post($url, $payload);
+            /** @var Response $response */
+            $response = $this->http
+                ->withHeaders([
+                    'Origin' => $config['origin'] ?? 'developer.mpesa.vm.co.mz',
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer '.$config['api_key'],
+                ])
+                ->withOptions(['verify' => $verify])
+                ->timeout(max(60, (int) $config['timeout']))
+                ->post($url, $payload);
 
             if (! $response->successful()) {
                 Log::warning('MPesa payment failed', [
@@ -107,7 +106,7 @@ class MpesaService
 
                 $data = $response->json();
                 $message = $data['output_ResponseDesc']
-                    ?? 'Nao foi possivel iniciar o pagamento via MPesa.';
+                    ?? 'Nao foi possivel iniciar o pagamento via M-Pesa.';
 
                 return [
                     'success' => false,
@@ -130,7 +129,7 @@ class MpesaService
 
             return [
                 'success' => false,
-                'message' => 'Ocorreu um erro ao comunicar com MPesa.',
+                'message' => 'Ocorreu um erro ao comunicar com M-Pesa.',
                 'transactionId' => null,
             ];
         }

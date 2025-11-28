@@ -43,6 +43,10 @@ interface PublishPageProps {
     }[];
 }
 
+// Free promotion valid until December 31, 2025
+const FREE_UNTIL = new Date('2025-12-31T23:59:59');
+const FREE_PROMO_LABEL = '31/12/2025';
+
 const defaultPlans: Plan[] = [
     {
         id: 'falecimento-3',
@@ -99,6 +103,7 @@ export default function PublishPage({ plans }: PublishPageProps) {
                 slug: plan.slug,
             }))
             : defaultPlans;
+    const isPromotionActive = new Date() <= FREE_UNTIL;
 
     const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
     const [selectedType, setSelectedType] =
@@ -358,21 +363,28 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                 )}
 
                                 <CardHeader className="text-center pb-6 pt-8">
-                                    <div
-                                        className={`mx-auto mb-4 p-4 rounded-2xl group-hover:scale-110 transition-transform ${plan.type === 'homenagem'
-                                            ? 'bg-rose-50 group-hover:bg-rose-100'
-                                            : plan.type === 'comunicado'
-                                                ? 'bg-blue-50 group-hover:bg-blue-100'
-                                                : 'bg-purple-50 group-hover:bg-purple-100'
-                                            }`}
-                                    >
-                                        {plan.type === 'homenagem' ? (
-                                            <Heart className="w-12 h-12 text-rose-600" />
-                                        ) : plan.type === 'comunicado' ? (
-                                            <Bell className="w-12 h-12 text-blue-600" />
-                                        ) : (
-                                            <FileText className="w-12 h-12 text-purple-600" />
+                                    <div className="relative">
+                                        {isPromotionActive && (
+                                            <div className="absolute -top-3 -right-3 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-400 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white shadow-lg">
+                                                Grátis até {FREE_PROMO_LABEL}
+                                            </div>
                                         )}
+                                        <div
+                                            className={`mx-auto mb-4 p-4 rounded-2xl  ${plan.type === 'homenagem'
+                                                ? 'bg-rose-50 group-hover:bg-rose-100'
+                                                : plan.type === 'comunicado'
+                                                    ? 'bg-blue-50 group-hover:bg-blue-100'
+                                                    : 'bg-purple-50 group-hover:bg-purple-100'
+                                                }`}
+                                        >
+                                            {plan.type === 'homenagem' ? (
+                                                <Heart className="w-12 h-12 text-rose-600" />
+                                            ) : plan.type === 'comunicado' ? (
+                                                <Bell className="w-12 h-12 text-blue-600" />
+                                            ) : (
+                                                <FileText className="w-12 h-12 text-purple-600" />
+                                            )}
+                                        </div>
                                     </div>
 
                                     <CardTitle className="mb-3 text-lg">
@@ -384,18 +396,30 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                         <span>{plan.description}</span>
                                     </div>
 
-                                    <div className="text-center border-t pt-4 mt-4">
-                                        <div className="text-slate-900 mb-1">
-                                            <span className="text-sm">
-                                                MT
-                                            </span>{' '}
-                                            {plan.price}
-                                        </div>
+                                    <div className="text-center border-t pt-4 mt-4 space-y-1">
+                                        {isPromotionActive ? (
+                                            <>
+                                                <div className="text-[10px] font-semibold uppercase tracking-[0.3em] text-emerald-500">
+                                                    Promoção gratuita
+                                                </div>
+                                                <div className="flex items-center justify-center gap-2 text-emerald-600">
+                                                    <span className="text-2xl font-bold">Grátis</span>
+                                                    <span className="text-xs line-through text-gray-600">
+                                                        MT {plan.price}
+                                                    </span>
+                                                </div>
+                                                <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500">
+                                                    {FREE_PROMO_LABEL}
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="text-lg font-semibold text-slate-900">
+                                                MT {plan.price}
+                                            </div>
+                                        )}
                                         <div className="text-slate-600 text-sm">
                                             {plan.duration}{' '}
-                                            {plan.duration === 1
-                                                ? 'dia'
-                                                : 'dias'}
+                                            {plan.duration === 1 ? 'dia' : 'dias'}
                                         </div>
                                     </div>
                                 </CardHeader>
@@ -432,8 +456,7 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                 <div className="flex-1">
                                     <p>
                                         A submissão de anúncios na Tempo Necrologia
-                                        é gratuita até <span className="font-semibold">10/12/2025</span>.
-                                        Após esta data poderemos aplicar tarifas de publicação.
+                                        é gratuita até <span className="font-semibold">{FREE_PROMO_LABEL}</span>.
                                     </p>
                                 </div>
                                 <button
@@ -903,14 +926,28 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                 {selectedPlan && (
                                     <div className="flex-1">
                                         <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <span className="text-slate-600">
-                                                    Total a pagar:
-                                                </span>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-slate-600">
+                                                Total a pagar:
+                                            </span>
+                                            {isPromotionActive ? (
+                                                <div className="flex flex-col items-end text-right text-sm">
+                                                    <span className="text-lg font-semibold text-emerald-600">
+                                                        Grátis
+                                                    </span>
+                                                    <span className="text-xs text-slate-500 line-through">
+                                                        MT {selectedPlan.price}
+                                                    </span>
+                                                    <span className="text-[10px] uppercase tracking-[0.2em] text-emerald-500">
+                                                        {FREE_PROMO_LABEL}
+                                                    </span>
+                                                </div>
+                                            ) : (
                                                 <span className="text-slate-900 font-semibold">
                                                     {selectedPlan.price} MT
                                                 </span>
-                                            </div>
+                                            )}
+                                        </div>
                                             <div className="flex items-center gap-2 text-sm text-slate-500">
                                                 <Clock className="w-4 h-4" />
                                                 Válido por{' '}

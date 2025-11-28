@@ -74,6 +74,8 @@ Laravel vive na raiz do projecto.
 
 - Lista de **planos** disponiveis (3, 7, 15 dias, outros) carregados da tabela `announcement_plans`.
 - Cartoes de plano com cores e icones (comunicado, homenagem, outros), usando o mesmo visual do frontend original.
+- Cada cartao exibe a promoção “Grátis até 10/12/2025”, com o valor original riscado e um badge verde.
+- Um aviso destacado no topo do formulario reforça que a submissão é gratuita durante a promoção e pode ser fechado pelo utilizador.
 - Formulario completo:
   - Dados do anuncio (tipo, nome, datas, local, mensagem, autor).
   - Dados do anunciante (nome, telefone, email opcional, documento).
@@ -96,6 +98,13 @@ Laravel vive na raiz do projecto.
     - volta para `/publicar`, mostra mensagem de sucesso no topo,
       limpa os campos e faz scroll suave para cima;
     - o botao "Publicar anuncio" fica desactivado enquanto o pedido esta a ser processado.
+
+**Checkout e pagamento M-Pesa**
+
+- Depois de criar o anuncio, o utilizador e redirecionado para `/checkout/{slug}` para confirmar o pagamento.
+- A pagina mostra o plano, o valor (marcado como gratuito ate 10/12/2025 durante a promocao), um campo de telefone e um botao que dispara o STK push (com badge “Pagamento recebido” apos o pedido).
+- O `CheckoutController` usa o `MpesaService` para iniciar a cobranca, grava o `payment_reference`, marca `payment_status = paid`, atualiza `paid_at` e publica o anuncio (`status = published` / `published_at` definidas) assim que a API responde com sucesso.
+- Apenas anuncios com `status = published` e `expires_at` futuro aparecem no site publico (home, pesquisa, homenagens, comunicados e pagina individual).
 
 **Pesquisa**
 
@@ -206,6 +215,12 @@ Editar o `.env` com:
 - `APP_URL`
 - `DB_*` (host, database, user, password)
 - `FILESYSTEM_DISK=public` (para uploads de fotos/documentos)
+- `MPESA_HOST` (API privada, ex: `https://api.sandbox.vm.co.mz:18352`)
+- `MPESA_ORIGIN` (origem usada no header `<Origin>`, ex: `developer.mpesa.vm.co.mz`)
+- `MPESA_API_KEY` (token completo para `Authorization: Bearer ...`)
+- `MPESA_SERVICE_PROVIDER_CODE` (ex: `171717`)
+- `MPESA_ENV` (`sandbox` ou `production`)
+- `MPESA_TIMEOUT` (tempo limite em segundos para chamadas M-Pesa)
 - Secao de mail, por exemplo:
 
 ```env
@@ -267,9 +282,9 @@ php artisan view:cache
    - calcula `expires_at` a partir do plano;
    - guarda paths de foto e documento;
    - envia email de notificacao.
-4. A pagina volta para `/publicar`, mostra mensagem de sucesso e limpa o formulario.
+4. O pedido redireciona para `/checkout/{slug}` mostrando uma mensagem de sucesso e limpando o formulario, para que o anunciante confirme o pagamento M-Pesa.
 5. Na administracao, um utilizador pode rever o anuncio e mudar o status para `published`.
-6. Somente anuncios com `status = published` aparecem no site publico
+6. Somente anuncios com `status = published` e `expires_at` no futuro aparecem no site publico
    (home, homenagens, comunicados, pesquisa e pagina individual).
 
 ---
@@ -296,4 +311,3 @@ php artisan view:cache
   e integracao real com EMOLA / M‑Pesa / transferencia.
 - Criar API publica de leitura para integracao com parceiros (por exemplo, funerarias).
 - Internacionalizacao (pt / en) da interface publica e administrativa.
-
