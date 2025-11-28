@@ -282,7 +282,7 @@ php artisan view:cache
    - calcula `expires_at` a partir do plano;
    - guarda paths de foto e documento;
    - envia email de notificacao.
-4. O pedido redireciona para `/checkout/{slug}` mostrando uma mensagem de sucesso e limpando o formulario, para que o anunciante confirme o pagamento M-Pesa.
+4. Quando a promoção estiver ativa, o pedido permanece pendente e o anunciante é redirecionado de volta a `/publicar` com um aviso de que o anúncio será publicado após revisão; fora da promoção os dados seguem para `/checkout/{slug}` para confirmar o pagamento.
 5. Na administracao, um utilizador pode rever o anuncio e mudar o status para `published`.
 6. Somente anuncios com `status = published` e `expires_at` no futuro aparecem no site publico
    (home, homenagens, comunicados, pesquisa e pagina individual).

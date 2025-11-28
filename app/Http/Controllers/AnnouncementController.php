@@ -8,6 +8,7 @@ use App\Models\Advertiser;
 use App\Models\Announcement;
 use App\Models\AnnouncementPlan;
 use App\Services\MpesaService;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -163,9 +164,16 @@ class AnnouncementController extends Controller
             report($exception);
         }
 
+        $freeUntil = Carbon::create(2025, 12, 31, 23, 59, 59);
+        if (now()->lte($freeUntil)) {
+            return redirect()
+                ->route('public.publicar')
+                ->with('success', 'Anuncio criado! Durante a promoção o pagamento é gratuito, o seu pedido ficará pendente e será publicado após revisão.');
+        }
+
         return redirect()
             ->route('checkout.show', $announcement)
-            ->with('success', 'Anuncio criado! Complete o pagamento para publicar.');
+            ->with('success', 'Anuncio criado! Complete o pagamento M-Pesa para publicar.');
     }
 
     protected function generateUniqueSlug(string $name): string

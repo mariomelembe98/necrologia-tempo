@@ -884,7 +884,8 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                             </label>
                                         </div>
 
-                                        <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-4 sm:p-5">
+                                        {!isPromotionActive && (
+                                            <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-4 sm:p-5">
                                             <h3 className="mb-3 text-sm font-semibold text-slate-900">
                                                 Formas de pagamento
                                             </h3>
@@ -918,6 +919,7 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                                 O pagamento deve ser efectuado após a aprovação do anúncio. Entraremos em contacto com os dados de confirmação.
                                             </p>
                                         </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
