@@ -22,6 +22,7 @@ interface SearchPageProps {
 
 export default function SearchPage({ type }: SearchPageProps) {
     const { announcements } = useAnnouncements();
+    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [searchTerm, setSearchTerm] = useState('');
     const [filterType, setFilterType] = useState<FilterType>(
         type ?? 'all',
@@ -133,6 +134,40 @@ export default function SearchPage({ type }: SearchPageProps) {
                             </span>
                         </div>
 
+                        <div className="ml-auto flex items-center gap-1 rounded-full border border-slate-200 bg-white/70 p-1 text-slate-500 shadow-sm">
+                            <button
+                                className={`flex h-9 w-9 items-center justify-center rounded-full transition ${
+                                    viewMode === 'grid'
+                                        ? 'bg-slate-900 text-white shadow-md'
+                                        : 'text-slate-500 hover:text-slate-900'
+                                }`}
+                                onClick={() => setViewMode('grid')}
+                                aria-label="Visualização em mosaico"
+                            >
+                                <span className="grid grid-cols-2 gap-1">
+                                    <span className="h-3 w-3 rounded-sm bg-current" />
+                                    <span className="h-3 w-3 rounded-sm bg-current" />
+                                    <span className="h-3 w-3 rounded-sm bg-current" />
+                                    <span className="h-3 w-3 rounded-sm bg-current" />
+                                </span>
+                            </button>
+                            <button
+                                className={`flex h-9 w-9 items-center justify-center rounded-full transition ${
+                                    viewMode === 'list'
+                                        ? 'bg-slate-900 text-white shadow-md'
+                                        : 'text-slate-500 hover:text-slate-900'
+                                }`}
+                                onClick={() => setViewMode('list')}
+                                aria-label="Visualização em lista"
+                            >
+                                <span className="flex flex-col gap-1">
+                                    <span className="h-1.5 w-3 rounded-sm bg-current" />
+                                    <span className="h-1.5 w-3 rounded-sm bg-current" />
+                                    <span className="h-1.5 w-3 rounded-sm bg-current" />
+                                </span>
+                            </button>
+                        </div>
+
                         {hasActiveFilters && (
                             <Button
                                 type="button"
@@ -166,7 +201,7 @@ export default function SearchPage({ type }: SearchPageProps) {
                                     id="search"
                                     type="text"
                                     placeholder="Nome da pessoa..."
-                                    className="pl-9"
+                                    className="pl-9 text-slate-900 placeholder:text-slate-500 focus:border-slate-400 focus:ring-slate-400"
                                     value={searchTerm}
                                     onChange={(event) =>
                                         setSearchTerm(event.target.value)
@@ -208,6 +243,7 @@ export default function SearchPage({ type }: SearchPageProps) {
                             <Input
                                 id="location"
                                 placeholder="Cidade ou província"
+                                className="text-slate-900 placeholder:text-slate-500 focus:border-slate-400 focus:ring-slate-400"
                                 value={filterLocation}
                                 onChange={(event) =>
                                     setFilterLocation(event.target.value)
@@ -256,12 +292,28 @@ export default function SearchPage({ type }: SearchPageProps) {
                         selecionados.
                     </div>
                 ) : (
-                    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                        {filteredAnnouncements.map((announcement) => (
-                            <AnnouncementCard
+                    <div
+                        className={
+                            viewMode === 'grid'
+                                ? 'grid gap-5 sm:grid-cols-2 lg:grid-cols-3'
+                                : 'space-y-4'
+                        }
+                    >
+                        {filteredAnnouncements.map((announcement, index) => (
+                            <div
                                 key={announcement.id}
-                                announcement={announcement}
-                            />
+                                className={`animate-search-card ${
+                                    viewMode === 'list'
+                                        ? 'border border-slate-200 rounded-2xl bg-white/80 p-4 shadow-sm'
+                                        : ''
+                                }`}
+                                style={{ animationDelay: `${index * 50}ms` }}
+                            >
+                                <AnnouncementCard
+                                    announcement={announcement}
+                                    variant={viewMode === 'list' ? 'compact' : 'default'}
+                                />
+                            </div>
                         ))}
                     </div>
                 )}

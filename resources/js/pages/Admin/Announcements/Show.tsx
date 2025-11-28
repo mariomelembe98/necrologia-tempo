@@ -3,6 +3,8 @@ import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 
+const DAY_MS = 1000 * 60 * 60 * 24;
+
 interface AdminAnnouncement {
     id: string;
     slug: string;
@@ -30,6 +32,10 @@ interface AdminAnnouncement {
     updatedAt?: string | null;
     publishedAt?: string | null;
     expiresAt?: string | null;
+    paymentStatus?: string | null;
+    paymentMethod?: string | null;
+    paymentReference?: string | null;
+    paidAt?: string | null;
 }
 
 interface ShowProps {
@@ -59,6 +65,42 @@ export default function AdminAnnouncementShow({ announcement }: ShowProps) {
             href: '#',
         },
     ];
+
+    const paymentStatus = announcement.paymentStatus ?? 'pending';
+    const paymentLabel =
+        paymentStatus === 'paid'
+            ? 'Pago'
+            : paymentStatus === 'failed'
+              ? 'Falhou'
+              : 'Pendente';
+    const paymentBadgeClass =
+        paymentStatus === 'paid'
+            ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+            : paymentStatus === 'failed'
+              ? 'bg-red-50 text-red-700 border-red-100'
+              : 'bg-amber-50 text-amber-700 border-amber-100';
+
+    const expiresAtDate = announcement.expiresAt
+        ? new Date(announcement.expiresAt)
+        : null;
+    const daysUntilExpiration =
+        expiresAtDate !== null
+            ? Math.ceil((expiresAtDate.getTime() - Date.now()) / DAY_MS)
+            : null;
+    const expirationLabel =
+        daysUntilExpiration === null
+            ? 'Sem data definida'
+            : daysUntilExpiration <= 0
+              ? 'Expirado'
+              : daysUntilExpiration === 1
+                ? 'Expira em 1 dia'
+                : `Expira em ${daysUntilExpiration} dias`;
+    const expirationToneClass =
+        daysUntilExpiration !== null && daysUntilExpiration <= 0
+            ? 'text-red-600'
+            : daysUntilExpiration !== null && daysUntilExpiration <= 7
+              ? 'text-amber-600'
+              : 'text-slate-600';
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -259,6 +301,62 @@ export default function AdminAnnouncementShow({ announcement }: ShowProps) {
                                     </span>
                                     {formatDateTime(announcement.expiresAt)}
                                 </p>
+                            </div>
+                        </div>
+                        <div className="rounded-xl border border-slate-200 bg-white p-4 text-xs shadow-sm dark:border-sidebar-border/70 dark:bg-sidebar">
+                            <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                                Pagamentos e expirações
+                            </h2>
+                            <div className="space-y-2 text-slate-700 dark:text-slate-200">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                                        Status do pagamento
+                                    </span>
+                                    <span
+                                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium border ${paymentBadgeClass}`}
+                                    >
+                                        {paymentLabel}
+                                    </span>
+                                </div>
+                                {announcement.paymentMethod && (
+                                    <p>
+                                        <span className="text-slate-500 dark:text-slate-400">
+                                            Método:{' '}
+                                        </span>
+                                        {announcement.paymentMethod}
+                                    </p>
+                                )}
+                                {announcement.paymentReference && (
+                                    <p>
+                                        <span className="text-slate-500 dark:text-slate-400">
+                                            Referência:{' '}
+                                        </span>
+                                        {announcement.paymentReference}
+                                    </p>
+                                )}
+                                <p>
+                                    <span className="text-slate-500 dark:text-slate-400">
+                                        Último registro:{' '}
+                                    </span>
+                                    {announcement.paidAt
+                                        ? formatDateTime(announcement.paidAt)
+                                        : 'Ainda não foi pago'}
+                                </p>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                                        Expiração
+                                    </span>
+                                    <span
+                                        className={`text-sm font-semibold ${expirationToneClass}`}
+                                    >
+                                        {expirationLabel}
+                                    </span>
+                                </div>
+                                {announcement.expiresAt && (
+                                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                                        {formatDateTime(announcement.expiresAt)}
+                                    </p>
+                                )}
                             </div>
                         </div>
                     </div>

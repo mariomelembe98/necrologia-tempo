@@ -1,13 +1,19 @@
 import { Link } from '@inertiajs/react';
-import { Bell, Calendar, Heart, MapPin, User } from 'lucide-react';
+import { ArrowRight, Bell, Calendar, Heart, MapPin, User } from 'lucide-react';
 
 import { type Announcement } from '@/context/AnnouncementContext';
 
+type AnnouncementCardVariant = 'default' | 'compact';
+
 interface AnnouncementCardProps {
     announcement: Announcement;
+    variant?: AnnouncementCardVariant;
 }
 
-export function AnnouncementCard({ announcement }: AnnouncementCardProps) {
+export function AnnouncementCard({
+    announcement,
+    variant = 'default',
+}: AnnouncementCardProps) {
     const formatDate = (value: string) =>
         new Date(value).toLocaleDateString('pt-PT');
 
@@ -30,10 +36,64 @@ export function AnnouncementCard({ announcement }: AnnouncementCardProps) {
         return death.getFullYear() - birth.getFullYear();
     })();
 
+    const baseCardClasses =
+        'block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 rounded-2xl';
+
+    if (variant === 'compact') {
+        return (
+            <Link
+                href={`/anuncio/${announcement.slug}`}
+                className={`${baseCardClasses} group`}
+            >
+                <article className="flex gap-4 rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm transition hover:border-slate-300 hover:shadow-lg">
+                    <div
+                        className={`flex h-14 w-14 items-center justify-center rounded-2xl text-white shadow ${
+                            announcement.type === 'homenagem'
+                                ? 'bg-rose-500'
+                                : 'bg-blue-500'
+                        }`}
+                    >
+                        {announcement.photoUrl ? (
+                            <img
+                                src={announcement.photoUrl}
+                                alt={announcement.name}
+                                className="h-14 w-14 rounded-2xl object-cover shadow-inner"
+                            />
+                        ) : (
+                            <span className="text-lg font-semibold">
+                                {initials}
+                            </span>
+                        )}
+                    </div>
+                    <div className="flex flex-1 flex-col gap-2">
+                        <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-slate-400">
+                            <span>
+                                {announcement.type === 'homenagem'
+                                    ? 'Homenagem'
+                                    : 'Comunicado'}
+                            </span>
+                            <span>{age ? `${age} anos` : '– anos'}</span>
+                        </div>
+                        <h3 className="text-sm font-semibold text-slate-900">
+                            {announcement.name}
+                        </h3>
+                        <p className="text-xs text-slate-600 line-clamp-2">
+                            {announcement.description}
+                        </p>
+                        <div className="flex items-center gap-2 text-[11px] text-slate-500">
+                            <MapPin className="w-3.5 h-3.5" />
+                            <span>{announcement.location}</span>
+                        </div>
+                    </div>
+                </article>
+            </Link>
+        );
+    }
+
     return (
         <Link
             href={`/anuncio/${announcement.slug}`}
-            className="block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 rounded-2xl"
+            className={baseCardClasses}
         >
             <article className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden hover:shadow-xl hover:border-slate-300 transition-all h-full flex flex-col">
                 <div
@@ -117,7 +177,9 @@ export function AnnouncementCard({ announcement }: AnnouncementCardProps) {
                                 {announcement.dateOfBirth && (
                                     <>
                                         <span>
-                                            {formatDate(announcement.dateOfBirth)}
+                                            {formatDate(
+                                                announcement.dateOfBirth,
+                                            )}
                                         </span>
                                         <span className="mx-1">–</span>
                                     </>
@@ -141,6 +203,7 @@ export function AnnouncementCard({ announcement }: AnnouncementCardProps) {
                         </div>
                     </div>
 
+
                     <p className="text-sm text-slate-700 leading-relaxed line-clamp-3 pt-1">
                         {announcement.description}
                     </p>
@@ -149,6 +212,10 @@ export function AnnouncementCard({ announcement }: AnnouncementCardProps) {
                         <div className="flex items-center gap-2">
                             <User className="w-3.5 h-3.5" />
                             <span>{announcement.author}</span>
+                        </div>
+                        <div className="text-emerald-500 font-semibold flex items-center gap-1">
+                            Ver detalhes
+                            <ArrowRight className="h-3.5 w-3.5" />
                         </div>
                     </div>
                 </div>

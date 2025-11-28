@@ -43,8 +43,11 @@ class AdminAnnouncementController extends Controller
                 'updatedAt' => optional($announcement->updated_at)?->toIso8601String(),
                 'publishedAt' => optional($announcement->published_at)?->toIso8601String(),
                 'expiresAt' => optional($announcement->expires_at)?->toIso8601String(),
+                'paymentStatus' => $announcement->payment_status,
+                'paymentMethod' => $announcement->payment_method,
+                'paymentReference' => $announcement->payment_reference,
+                'paidAt' => optional($announcement->paid_at)?->toIso8601String(),
             ],
         ]);
     }
 }
-

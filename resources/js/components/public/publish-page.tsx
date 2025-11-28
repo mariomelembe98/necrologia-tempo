@@ -366,7 +366,7 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                     <div className="relative">
                                         {isPromotionActive && (
                                             <div className="absolute -top-3 -right-3 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-400 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white shadow-lg">
-                                                Grátis até {FREE_PROMO_LABEL}
+                                                Promoção
                                             </div>
                                         )}
                                         <div
@@ -950,8 +950,8 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                                 </span>
                                             )}
                                         </div>
-                                            <div className="flex items-center gap-2 text-sm text-slate-500">
-                                                <Clock className="w-4 h-4" />
+                                        <div className="flex items-center gap-2 text-sm text-slate-500">
+                                            <Clock className="w-4 h-4" />
                                                 Válido por{' '}
                                                 {selectedPlan.duration}{' '}
                                                 {selectedPlan.duration === 1

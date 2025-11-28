@@ -15,6 +15,9 @@ interface AnnouncementFromServer {
     name: string;
     type: 'homenagem' | 'comunicado' | 'outros';
     status: string;
+    payment_status?: string | null;
+    payment_reference?: string | null;
+    paid_at?: string | null;
     created_at?: string | null;
     expires_at?: string | null;
     advertiser?: {
@@ -46,6 +49,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+const DAY_MS = 1000 * 60 * 60 * 24;
+
 function formatDate(value?: string | null) {
     if (!value) return '-';
 
@@ -66,6 +71,9 @@ export default function AdminAnnouncementsIndex({
     >('all');
     const [typeFilter, setTypeFilter] = useState<
         'all' | 'homenagem' | 'comunicado' | 'outros'
+    >('all');
+    const [paymentFilter, setPaymentFilter] = useState<
+        'all' | 'pending' | 'paid' | 'failed'
     >('all');
     const [startDate, setStartDate] = useState(filters?.from ?? '');
     const [endDate, setEndDate] = useState(filters?.to ?? '');
@@ -96,18 +104,66 @@ export default function AdminAnnouncementsIndex({
         };
     }, []);
 
+    const overview = useMemo(() => {
+        const now = Date.now();
+        let paymentPending = 0;
+        let reviewPending = 0;
+        let expiringSoon = 0;
+        let expired = 0;
+
+        announcements.forEach((announcement) => {
+            const paymentStatus = announcement.payment_status ?? 'pending';
+
+            if (paymentStatus !== 'paid') {
+                paymentPending++;
+            }
+
+            if (announcement.status === 'pending') {
+                reviewPending++;
+            }
+
+            if (announcement.expires_at) {
+                const expiresAt = new Date(announcement.expires_at);
+                const diffDays = Math.ceil(
+                    (expiresAt.getTime() - now) / DAY_MS,
+                );
+
+                if (diffDays <= 0) {
+                    expired++;
+                } else if (diffDays <= 7) {
+                    expiringSoon++;
+                }
+            }
+        });
+
+        return {
+            paymentPending,
+            reviewPending,
+            expiringSoon,
+            expired,
+        };
+    }, [announcements]);
+
     const items = useMemo(() => {
-        const mapped = announcements.map((item) => ({
-            id: String(item.id),
-            slug: item.slug,
-            name: item.name,
-            type: item.type,
-            status: item.status,
-            createdAt: item.created_at,
-            expiresAt: item.expires_at,
-            advertiserName: item.advertiser?.name ?? null,
-            planName: item.plan?.name ?? null,
-        }));
+        const now = Date.now();
+        const mapped = announcements.map((item) => {
+            const paymentStatus = item.payment_status ?? 'pending';
+
+            return {
+                id: String(item.id),
+                slug: item.slug,
+                name: item.name,
+                type: item.type,
+                status: item.status,
+                createdAt: item.created_at,
+                expiresAt: item.expires_at,
+                advertiserName: item.advertiser?.name ?? null,
+                planName: item.plan?.name ?? null,
+                paymentStatus,
+                paymentReference: item.payment_reference ?? null,
+                paidAt: item.paid_at ?? null,
+            };
+        });
 
         return mapped.filter((item) => {
             if (statusFilter !== 'all' && item.status !== statusFilter) {
@@ -115,6 +171,10 @@ export default function AdminAnnouncementsIndex({
             }
 
             if (typeFilter !== 'all' && item.type !== typeFilter) {
+                return false;
+            }
+
+            if (paymentFilter !== 'all' && item.paymentStatus !== paymentFilter) {
                 return false;
             }
 
@@ -149,10 +209,19 @@ export default function AdminAnnouncementsIndex({
             return (
                 item.name.toLowerCase().includes(term) ||
                 (item.advertiserName ?? '').toLowerCase().includes(term) ||
-                (item.planName ?? '').toLowerCase().includes(term)
+                (item.planName ?? '').toLowerCase().includes(term) ||
+                (item.paymentReference ?? '').toLowerCase().includes(term)
             );
         });
-    }, [announcements, search, statusFilter, typeFilter, startDate, endDate]);
+    }, [
+        announcements,
+        search,
+        statusFilter,
+        typeFilter,
+        startDate,
+        endDate,
+        paymentFilter,
+    ]);
 
     const columns: any[] = [
         {
@@ -225,6 +294,56 @@ export default function AdminAnnouncementsIndex({
             },
         },
         {
+            title: 'Pagamento',
+            data: 'paymentStatus',
+            render: (data: string, type: string, row: any) => {
+                const status = data ?? 'pending';
+                const order =
+                    status === 'pending'
+                        ? 0
+                        : status === 'failed'
+                          ? 1
+                          : 2;
+
+                const label =
+                    status === 'paid'
+                        ? 'Pago'
+                        : status === 'failed'
+                          ? 'Falhou'
+                          : 'Pendente';
+
+                const baseClasses =
+                    'inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium border';
+
+                const classes =
+                    status === 'paid'
+                        ? `${baseClasses} bg-emerald-50 text-emerald-700 border-emerald-100`
+                        : status === 'failed'
+                          ? `${baseClasses} bg-red-50 text-red-700 border-red-100`
+                          : `${baseClasses} bg-amber-50 text-amber-700 border-amber-100`;
+
+                if (type !== 'display') {
+                    return order;
+                }
+
+                const details: string[] = [];
+
+                if (row.paymentReference) {
+                    details.push(`Ref: ${row.paymentReference}`);
+                }
+
+                if (row.paidAt) {
+                    details.push(`Pago em ${formatDate(row.paidAt)}`);
+                }
+
+                const detailsMarkup = details.length
+                    ? `<span class="text-[11px] text-slate-500">${details.join(' · ')}</span>`
+                    : '';
+
+                return `<div class="flex flex-col gap-[2px]"><span data-order="${order}" class="${classes}">${label}</span>${detailsMarkup}</div>`;
+            },
+        },
+        {
             title: 'Anunciante',
             data: 'advertiserName',
             defaultContent: '-',
@@ -257,11 +376,23 @@ export default function AdminAnnouncementsIndex({
                     return type === 'display' ? '-' : '';
                 }
 
-                if (type === 'display') {
-                    return formatDate(data);
+                if (type !== 'display') {
+                    return data;
                 }
 
-                return data;
+                const expiresDate = new Date(data);
+                const diffDays = Math.ceil(
+                    (expiresDate.getTime() - Date.now()) / DAY_MS,
+                );
+                const expiresWord = diffDays === 1 ? 'dia' : 'dias';
+                const warning =
+                    diffDays <= 0
+                        ? '<span class="text-[11px] font-semibold text-red-600">Expirado</span>'
+                        : diffDays <= 7
+                          ? `<span class="text-[11px] font-semibold text-amber-600">Expira em ${diffDays} ${expiresWord}</span>`
+                          : '';
+
+                return `<div class="flex flex-col gap-[2px]"><span>${formatDate(data)}</span>${warning}</div>`;
             },
         },
         {
@@ -363,7 +494,53 @@ export default function AdminAnnouncementsIndex({
                             Anuncios
                         </h1>
                         <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                            Lista de anuncios publicados e pendentes.
+                            Painel com pagamentos e expirações em destaque.
+                        </p>
+                    </div>
+                </div>
+                <div className="grid gap-3 pt-3 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-sm dark:border-sidebar-border/70 dark:bg-sidebar/80">
+                        <p className="text-[10px] uppercase tracking-[0.3em] text-slate-400">
+                            Pagamentos pendentes
+                        </p>
+                        <p className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
+                            {overview.paymentPending}
+                        </p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                            Checkout ainda não finalizado
+                        </p>
+                    </div>
+                    <div className="rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-sm dark:border-sidebar-border/70 dark:bg-sidebar/80">
+                        <p className="text-[10px] uppercase tracking-[0.3em] text-slate-400">
+                            Em revisão
+                        </p>
+                        <p className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
+                            {overview.reviewPending}
+                        </p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                            Anúncios aguardando publicação
+                        </p>
+                    </div>
+                    <div className="rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-sm dark:border-sidebar-border/70 dark:bg-sidebar/80">
+                        <p className="text-[10px] uppercase tracking-[0.3em] text-slate-400">
+                            Expiram em até 7 dias
+                        </p>
+                        <p className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
+                            {overview.expiringSoon}
+                        </p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                            Alertas de expiração próxima
+                        </p>
+                    </div>
+                    <div className="rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-sm dark:border-sidebar-border/70 dark:bg-sidebar/80">
+                        <p className="text-[10px] uppercase tracking-[0.3em] text-slate-400">
+                            Expirados
+                        </p>
+                        <p className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
+                            {overview.expired}
+                        </p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                            Já passaram da data de exibição
                         </p>
                     </div>
                 </div>
@@ -418,6 +595,24 @@ export default function AdminAnnouncementsIndex({
                                 <option value="pending">Pendentes</option>
                                 <option value="published">Publicados</option>
                                 <option value="rejected">Rejeitados</option>
+                            </select>
+                            <select
+                                value={paymentFilter}
+                                onChange={(event) =>
+                                    setPaymentFilter(
+                                        event.target.value as
+                                            | 'all'
+                                            | 'pending'
+                                            | 'paid'
+                                            | 'failed',
+                                    )
+                                }
+                                className="h-8 rounded-md border border-slate-200 bg-slate-50 px-2 text-xs text-slate-900 focus:border-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400 dark:border-sidebar-border dark:bg-sidebar dark:text-slate-50 dark:focus:border-slate-300 dark:focus:ring-slate-300"
+                            >
+                                <option value="all">Todos os pagamentos</option>
+                                <option value="pending">Pendentes</option>
+                                <option value="paid">Pagos</option>
+                                <option value="failed">Falhos</option>
                             </select>
                             <input
                                 type="date"

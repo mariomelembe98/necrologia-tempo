@@ -140,6 +140,21 @@
     --sidebar-ring: oklch(0.439 0 0);
 }
 
+@keyframes fade-up-card {
+    0% {
+        opacity: 0;
+        transform: translateY(14px) scale(0.985);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.animate-search-card {
+    animation: fade-up-card 0.45s ease both;
+}
+
 @layer base {
     * {
         @apply border-border;
