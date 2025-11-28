@@ -74,7 +74,7 @@ Laravel vive na raiz do projecto.
 
 - Lista de **planos** disponiveis (3, 7, 15 dias, outros) carregados da tabela `announcement_plans`.
 - Cartoes de plano com cores e icones (comunicado, homenagem, outros), usando o mesmo visual do frontend original.
-- Cada cartao exibe a promoção “Grátis até 10/12/2025”, com o valor original riscado e um badge verde.
+- Cada cartao exibe a promoção “Grátis até 31/12/2025”, com o valor original riscado e um badge verde.
 - Um aviso destacado no topo do formulario reforça que a submissão é gratuita durante a promoção e pode ser fechado pelo utilizador.
 - Formulario completo:
   - Dados do anuncio (tipo, nome, datas, local, mensagem, autor).
@@ -102,7 +102,7 @@ Laravel vive na raiz do projecto.
 **Checkout e pagamento M-Pesa**
 
 - Depois de criar o anuncio, o utilizador e redirecionado para `/checkout/{slug}` para confirmar o pagamento.
-- A pagina mostra o plano, o valor (marcado como gratuito ate 10/12/2025 durante a promocao), um campo de telefone e um botao que dispara o STK push (com badge “Pagamento recebido” apos o pedido).
+- A pagina mostra o plano, o valor (marcado como gratuito ate 31/12/2025 durante a promocao), um campo de telefone e um botao que dispara o STK push (com badge “Pagamento recebido” apos o pedido).
 - O `CheckoutController` usa o `MpesaService` para iniciar a cobranca, grava o `payment_reference`, marca `payment_status = paid`, atualiza `paid_at` e publica o anuncio (`status = published` / `published_at` definidas) assim que a API responde com sucesso.
 - Apenas anuncios com `status = published` e `expires_at` futuro aparecem no site publico (home, pesquisa, homenagens, comunicados e pagina individual).
 
