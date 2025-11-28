@@ -536,12 +536,17 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                                 <Calendar className="w-4 h-4" />
                                                 {selectedPlan.duration} dias
                                             </span>
-                                            <span className="inline-flex items-center gap-1">
-                                                <span className="text-slate-400">
-                                                    •
+                                            {isPromotionActive ? (
+                                                <span className="inline-flex items-center gap-1">
+                                                    <Calendar className="w-4 h-4" />
+                                                    Promoção activa
                                                 </span>
-                                                {selectedPlan.price} MT
-                                            </span>
+                                            ) : (
+                                                <span className="inline-flex items-center gap-1">
+                                                    <Calendar className="w-4 h-4" />
+                                                    {selectedPlan.price} MT
+                                                </span>
+                                            )}
                                         </div>
                                     )}
                                 </div>
