@@ -121,7 +121,7 @@ export default function PublicHeader() {
                 >
                     <div className="flex flex-col gap-2">
                         <Link href="/" className={mobileChipClass('/')}>
-                            Home
+                            inicio
                         </Link>
                         <Link
                             href="/homenagens"
