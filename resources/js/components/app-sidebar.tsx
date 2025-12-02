@@ -37,6 +37,11 @@ const mainNavItems: NavItem[] = [
         href: '/admin/anunciantes',
         icon: Users,
     },
+    {
+        title: 'Utilizadores',
+        href: '/admin/utilizadores/gestao',
+        icon: Users,
+    },
 ];
 
 

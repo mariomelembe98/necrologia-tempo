@@ -18,10 +18,21 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_BLOCKED = 'blocked';
+
+    public const ROLES = [
+        'admin',
+        'moderator',
+        'support',
+    ];
+
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role',
+        'status',
     ];
 
     /**
@@ -47,6 +58,14 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
+        ];
+    }
+
+    public static function allowedStatuses(): array
+    {
+        return [
+            self::STATUS_ACTIVE,
+            self::STATUS_BLOCKED,
         ];
     }
 }

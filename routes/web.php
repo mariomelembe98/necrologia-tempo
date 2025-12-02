@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AdminAnnouncementController;
 use App\Http\Controllers\AdminAdvertiserController;
 use App\Http\Controllers\AdminPlanController;
+use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\AdminUserPageController;
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\MpesaController;
 use App\Http\Controllers\PublicAnnouncementController;
 use Illuminate\Support\Facades\Route;
 
@@ -53,6 +54,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/admin/anunciantes', [AdminAdvertiserController::class, 'index'])
         ->name('admin.advertisers.index');
+
+    Route::get('/admin/utilizadores/gestao', AdminUserPageController::class)
+        ->name('admin.users.manage');
+
+    Route::get('/admin/utilizadores', [AdminUserController::class, 'index'])
+        ->name('admin.users.index');
+    Route::post('/admin/utilizadores', [AdminUserController::class, 'store'])
+        ->name('admin.users.store');
+    Route::get('/admin/utilizadores/{user}', [AdminUserController::class, 'show'])
+        ->name('admin.users.show');
+    Route::put('/admin/utilizadores/{user}', [AdminUserController::class, 'update'])
+        ->name('admin.users.update');
+    Route::delete('/admin/utilizadores/{user}', [AdminUserController::class, 'destroy'])
+        ->name('admin.users.destroy');
 
     Route::get('/admin/anuncios/{announcement:slug}', AdminAnnouncementController::class)
         ->name('admin.announcements.show');
