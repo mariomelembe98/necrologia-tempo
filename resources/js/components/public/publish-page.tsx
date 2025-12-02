@@ -14,7 +14,7 @@ import {
     FileText,
     Heart,
     Mail,
-    Phone,
+    LucideMessageCircle,
     Send,
     Shield,
     Upload,
@@ -491,8 +491,8 @@ export default function PublishPage({ plans }: PublishPageProps) {
                     </div>
                     <div className="mt-5 grid gap-3 sm:grid-cols-2">
                         <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs text-slate-700 sm:text-sm">
-                            <Phone className="h-4 w-4 text-slate-500" />
-                            <span>Suporte: <a href="tel:+258833219644">+258 83 321 9644</a></span>
+                            <LucideMessageCircle className="h-4 w-4 text-slate-500" />
+                            <span>Whatsapp: <a href="https://api.whatsapp.com/send?phone=258868010880">+258 86 801 0880</a></span>
                         </div>
                         <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs text-slate-700 sm:text-sm">
                             <Mail className="h-4 w-4 text-slate-500" />
