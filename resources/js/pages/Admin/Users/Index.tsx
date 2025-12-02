@@ -38,6 +38,11 @@ const defaultForm = {
     password: '',
 };
 
+const getCsrfToken = () =>
+    document
+        .querySelector('meta[name="csrf-token"]')
+        ?.getAttribute('content') ?? '';
+
 export default function AdminUsersIndex() {
     const [users, setUsers] = useState<AdminUser[]>([]);
     const [meta, setMeta] = useState<PaginationMeta>({
@@ -128,6 +133,7 @@ export default function AdminUsersIndex() {
             const response = await fetch(url, {
                 method,
                 headers: {
+                    'X-CSRF-TOKEN': getCsrfToken(),
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                 },
@@ -169,6 +175,7 @@ export default function AdminUsersIndex() {
             const response = await fetch(`/admin/utilizadores/${user.id}`, {
                 method: 'DELETE',
                 headers: {
+                    'X-CSRF-TOKEN': getCsrfToken(),
                     Accept: 'application/json',
                 },
             });
