@@ -1,7 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 interface AdminAdvertiser {
     id: string;
@@ -52,6 +52,7 @@ function formatDateTime(value?: string | null) {
 
 export default function AdvertisersIndex({ advertisers, filters }: AdvertisersIndexProps) {
     const [statusFilter, setStatusFilter] = useState<string>(filters?.status ?? 'all');
+    const [jumpPage, setJumpPage] = useState(String(advertisers.current_page));
 
     const changeStatusFilter = (value: string) => {
         setStatusFilter(value);
@@ -82,7 +83,36 @@ export default function AdvertisersIndex({ advertisers, filters }: AdvertisersIn
                 preserveScroll: true,
             },
         );
+        setJumpPage(String(page));
     };
+
+    const paginationWindow = useMemo(() => {
+        const pages = [];
+        const start = Math.max(1, advertisers.current_page - 2);
+        const end = Math.min(advertisers.last_page, advertisers.current_page + 2);
+
+        if (start > 1) {
+            pages.push(1);
+        }
+
+        if (start > 2) {
+            pages.push(-1);
+        }
+
+        for (let number = start; number <= end; number += 1) {
+            pages.push(number);
+        }
+
+        if (end < advertisers.last_page - 1) {
+            pages.push(-2);
+        }
+
+        if (end < advertisers.last_page) {
+            pages.push(advertisers.last_page);
+        }
+
+        return pages;
+    }, [advertisers.current_page, advertisers.last_page]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -218,10 +248,65 @@ export default function AdvertisersIndex({ advertisers, filters }: AdvertisersIn
                                 Próxima
                             </button>
                         </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                                Ir para
+                            </span>
+                            <div className="flex items-center gap-1">
+                                {paginationWindow.map((page) => {
+                                    if (page < 0) {
+                                        return (
+                                            <span
+                                                key={page}
+                                                className="text-xs text-slate-400"
+                                            >
+                                                ...
+                                            </span>
+                                        );
+                                    }
+
+                                    return (
+                                        <button
+                                            key={page}
+                                            type="button"
+                                            onClick={() => goToPage(page)}
+                                            className={`h-8 w-8 rounded-full text-xs font-medium ${
+                                                page === advertisers.current_page
+                                                    ? 'bg-slate-900 text-white'
+                                                    : 'bg-slate-50 text-slate-900 hover:bg-slate-100'
+                                            }`}
+                                            aria-current={page === advertisers.current_page ? 'true' : undefined}
+                                        >
+                                            {page}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            <span className="text-[11px] text-slate-400 dark:text-slate-500">
+                                /
+                            </span>
+                            <input
+                                type="number"
+                                min={1}
+                                max={advertisers.last_page}
+                                value={jumpPage}
+                                onChange={(event) => setJumpPage(event.target.value)}
+                                className="w-14 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-900 focus:border-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400 dark:border-sidebar-border dark:bg-sidebar dark:text-slate-50 dark:focus:border-slate-300 dark:focus:ring-slate-300"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const targetPage = Number(jumpPage) || 1;
+                                    goToPage(Math.min(Math.max(targetPage, 1), advertisers.last_page));
+                                }}
+                                className="rounded-md border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-sidebar-border dark:bg-sidebar dark:text-slate-200 dark:hover:bg-sidebar/80"
+                            >
+                                Ir
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </AppLayout>
     );
 }
-
