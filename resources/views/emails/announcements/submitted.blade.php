@@ -52,9 +52,15 @@
                                 <td style="padding:4px 0; vertical-align:top;">{{ $announcement->location }}</td>
                             </tr>
                             <tr>
-                                <td style="padding:4px 16px 4px 0; width:160px; color:#52525b; font-weight:500; white-space:nowrap; vertical-align:top;">Mensagem</td>
-                                <td style="padding:4px 0; vertical-align:top; white-space:pre-line;">
-                                    {{ $announcement->description }}
+                                <td colspan="2" style="padding:4px 16px 4px 0; color:#52525b; font-weight:500; text-transform:uppercase; font-size:11px;">
+                                    Mensagem
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="padding:4px 0; vertical-align:top;">
+                                    <p style="margin:0; white-space:pre-line;">
+                                        {{ $announcement->description }}
+                                    </p>
                                 </td>
                             </tr>
                             <tr>
