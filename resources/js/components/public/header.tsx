@@ -50,7 +50,7 @@ export default function PublicHeader() {
 
                     <nav className="hidden md:flex items-center gap-8">
                         <Link href="/" className={desktopLinkClass('/')}>
-                            Home
+                            Inicio
                         </Link>
 
                         <Link

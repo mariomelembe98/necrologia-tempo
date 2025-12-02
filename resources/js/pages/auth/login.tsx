@@ -24,10 +24,10 @@ export default function Login({
 }: LoginProps) {
     return (
         <AuthLayout
-            title="Log in to your account"
-            description="Enter your email and password below to log in"
+            title="Entrar na sua conta"
+            description="Informe o e-mail e a senha para acessar o painel"
         >
-            <Head title="Log in" />
+            <Head title="Entrar" />
 
             <Form
                 {...store.form()}
@@ -38,7 +38,7 @@ export default function Login({
                     <>
                         <div className="grid gap-6">
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                                <Label htmlFor="email">Endereço de email</Label>
                                 <Input
                                     id="email"
                                     type="email"
@@ -54,14 +54,14 @@ export default function Login({
 
                             <div className="grid gap-2">
                                 <div className="flex items-center">
-                                    <Label htmlFor="password">Password</Label>
+                                    <Label htmlFor="password">Senha</Label>
                                     {canResetPassword && (
                                         <TextLink
                                             href={request()}
                                             className="ml-auto text-sm"
                                             tabIndex={5}
                                         >
-                                            Forgot password?
+                                            Esqueceu a senha?
                                         </TextLink>
                                     )}
                                 </div>
@@ -83,7 +83,7 @@ export default function Login({
                                     name="remember"
                                     tabIndex={3}
                                 />
-                                <Label htmlFor="remember">Remember me</Label>
+                                <Label htmlFor="remember">Lembrar-me</Label>
                             </div>
 
                             <Button
@@ -94,18 +94,18 @@ export default function Login({
                                 data-test="login-button"
                             >
                                 {processing && <Spinner />}
-                                Log in
+                                Entrar
                             </Button>
                         </div>
 
-                        {canRegister && (
-                            <div className="text-center text-sm text-muted-foreground">
-                                Don't have an account?{' '}
-                                <TextLink href={register()} tabIndex={5}>
-                                    Sign up
-                                </TextLink>
-                            </div>
-                        )}
+                        {/* {canRegister && (
+                        <div className="text-center text-sm text-muted-foreground">
+                            Ainda não tem conta?{' '}
+                            <TextLink href={register()} tabIndex={5}>
+                                Criar conta
+                            </TextLink>
+                        </div>
+                        )} */}
                     </>
                 )}
             </Form>
