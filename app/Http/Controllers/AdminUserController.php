@@ -10,8 +10,32 @@ use Illuminate\Support\Str;
 
 class AdminUserController extends Controller
 {
+    private function ensureManager(Request $request): User
+    {
+        $user = $request->user();
+
+        if (! $user || ! $user->canEditUsers()) {
+            abort(403);
+        }
+
+        return $user;
+    }
+
+    private function ensureAdmin(Request $request): User
+    {
+        $user = $request->user();
+
+        if (! $user || ! $user->isAdmin()) {
+            abort(403);
+        }
+
+        return $user;
+    }
+
     public function index(Request $request): JsonResponse
     {
+        $this->ensureManager($request);
+
         $query = User::query();
 
         if ($status = $request->get('status')) {
@@ -53,6 +77,8 @@ class AdminUserController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $this->ensureAdmin($request);
+
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
@@ -79,23 +105,36 @@ class AdminUserController extends Controller
 
     public function show(User $user): JsonResponse
     {
+        $this->ensureManager(request());
+
         return response()->json(['user' => $user]);
     }
 
     public function update(Request $request, User $user): JsonResponse
     {
-        $data = $request->validate([
+        $actor = $this->ensureManager($request);
+
+        $rules = [
             'name' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|max:255|unique:users,email,'.$user->id,
-            'role' => 'sometimes|required|string|in:'.implode(',', User::ROLES),
-            'status' => 'sometimes|required|string|in:'.implode(',', User::allowedStatuses()),
             'password' => 'nullable|string|min:8',
-        ]);
+        ];
+
+        if ($actor->isAdmin()) {
+            $rules['role'] = 'sometimes|required|string|in:'.implode(',', User::ROLES);
+            $rules['status'] = 'sometimes|required|string|in:'.implode(',', User::allowedStatuses());
+        }
+
+        $data = $request->validate($rules);
 
         if (! empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         } else {
             unset($data['password']);
+        }
+
+        if (! $actor->isAdmin()) {
+            unset($data['role'], $data['status']);
         }
 
         $user->update($data);
@@ -105,6 +144,8 @@ class AdminUserController extends Controller
 
     public function destroy(Request $request, User $user): JsonResponse
     {
+        $this->ensureAdmin($request);
+
         if ($request->user()?->id === $user->id) {
             return response()->json(['message' => 'Não é possível excluir o próprio utilizador'], 422);
         }

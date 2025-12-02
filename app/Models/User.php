@@ -68,4 +68,19 @@ class User extends Authenticatable
             self::STATUS_BLOCKED,
         ];
     }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function canEditUsers(): bool
+    {
+        return in_array($this->role, ['admin', 'moderator'], true);
+    }
+
+    public function canDeleteUsers(): bool
+    {
+        return $this->role === 'admin';
+    }
 }

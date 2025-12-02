@@ -1,5 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
+import type { SharedData } from '@/types';
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
 interface AdminUser {
@@ -63,6 +64,15 @@ export default function AdminUsersIndex() {
     const [statusMessage, setStatusMessage] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
 
+    const { auth } = usePage<SharedData>().props;
+    const currentRole =
+        (auth.user.role as 'admin' | 'moderator' | 'support') ?? 'support';
+    const canCreate = currentRole === 'admin';
+    const canEdit = ['admin', 'moderator'].includes(currentRole);
+    const canDelete = currentRole === 'admin';
+    const canConfigureRole = currentRole === 'admin';
+    const canUseForm = canCreate || canEdit;
+
     const fetchUsers = useCallback(
         async (targetPage = 1) => {
             setLoading(true);
@@ -110,18 +120,28 @@ export default function AdminUsersIndex() {
         fetchUsers(1);
     }, [fetchUsers]);
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setSaving(true);
         setStatusMessage(null);
 
-        const payload = {
+        const allowSubmit = editing ? canEdit : canCreate;
+        if (!allowSubmit) {
+            setStatusMessage('Você não tem permissão para esta ação.');
+            setSaving(false);
+            return;
+        }
+
+        const payload: Record<string, string> = {
             name: form.name,
             email: form.email,
-            role: form.role,
-            status: form.status,
             ...(form.password ? { password: form.password } : {}),
         };
+
+        if (canConfigureRole) {
+            payload.role = form.role;
+            payload.status = form.status;
+        }
 
         const url = editing
             ? `/admin/utilizadores/${editing.id}`
@@ -148,7 +168,7 @@ export default function AdminUsersIndex() {
 
             setStatusMessage(
                 editing
-                    ? 'Utilizador atualizado com sucesso.'
+                    ? 'Utilizador actualizado com sucesso.'
                     : 'Utilizador criado com sucesso.',
             );
             setForm(defaultForm);
@@ -167,6 +187,10 @@ export default function AdminUsersIndex() {
     };
 
     const handleDelete = async (user: AdminUser) => {
+        if (!canDelete) {
+            setStatusMessage('Você não tem permissão para excluir utilizadores.');
+            return;
+        }
         if (!window.confirm('Tem certeza que deseja excluir este utilizador?')) {
             return;
         }
@@ -359,29 +383,33 @@ export default function AdminUsersIndex() {
                                                     {formatDate(user.created_at)}
                                                 </td>
                                                 <td className="px-4 py-2 text-xs">
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => {
-                                                            setEditing(user);
-                                                            setForm({
-                                                                name: user.name,
-                                                                email: user.email,
-                                                                role: user.role,
-                                                                status: user.status,
-                                                                password: '',
-                                                            });
-                                                        }}
-                                                        className="mr-2 text-sky-600 hover:underline"
-                                                    >
-                                                        Editar
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleDelete(user)}
-                                                        className="text-rose-600 hover:underline"
-                                                    >
-                                                        Remover
-                                                    </button>
+                                                    {canEdit && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setEditing(user);
+                                                                setForm({
+                                                                    name: user.name,
+                                                                    email: user.email,
+                                                                    role: user.role,
+                                                                    status: user.status,
+                                                                    password: '',
+                                                                });
+                                                            }}
+                                                            className="mr-2 text-sky-600 hover:underline"
+                                                        >
+                                                            Editar
+                                                        </button>
+                                                    )}
+                                                    {canDelete && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleDelete(user)}
+                                                            className="text-rose-600 hover:underline"
+                                                        >
+                                                            Remover
+                                                        </button>
+                                                    )}
                                                 </td>
                                             </tr>
                                         ))
@@ -450,8 +478,14 @@ export default function AdminUsersIndex() {
                             {editing ? 'Editar utilizador' : 'Criar um novo utilizador'}
                         </h2>
                         <p className="text-xs text-slate-500 dark:text-slate-400">
-                            Papéis: admin, moderator, support. Salve para criar/atualizar.
+                            Papéis: admin, moderator, support. Salve para criar/actualizar.
                         </p>
+                        {!canUseForm && (
+                            <div className="mt-2 rounded-md border border-amber-200/80 bg-amber-50 px-3 py-2 text-[11px] text-amber-800">
+                                Você possui acesso de leitura. Apenas administradores e
+                                moderadores podem editar ou criar utilizadores.
+                            </div>
+                        )}
 
                         <form
                             className="mt-4 space-y-3 text-xs"
@@ -499,6 +533,7 @@ export default function AdminUsersIndex() {
                                             }))
                                         }
                                         className="rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-900 focus:border-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400 dark:border-sidebar-border dark:bg-sidebar dark:text-slate-50 dark:focus:border-slate-300 dark:focus:ring-slate-300"
+                                        disabled={!canConfigureRole}
                                     >
                                         {roles
                                             .filter((role) => role !== 'all')
@@ -520,6 +555,7 @@ export default function AdminUsersIndex() {
                                             }))
                                         }
                                         className="rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-900 focus:border-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400 dark:border-sidebar-border dark:bg-sidebar dark:text-slate-50 dark:focus:border-slate-300 dark:focus:ring-slate-300"
+                                        disabled={!canConfigureRole}
                                     >
                                         <option value="active">Ativo</option>
                                         <option value="blocked">Bloqueado</option>
@@ -545,7 +581,7 @@ export default function AdminUsersIndex() {
                                 <button
                                     type="submit"
                                     className="rounded-md bg-slate-900 px-4 py-2 text-xs font-medium text-white hover:bg-slate-800 disabled:opacity-70"
-                                    disabled={saving}
+                                    disabled={saving || !canUseForm}
                                 >
                                     {saving ? 'Gravando…' : 'Salvar'}
                                 </button>
