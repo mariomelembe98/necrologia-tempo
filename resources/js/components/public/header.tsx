@@ -84,7 +84,7 @@ export default function PublicHeader() {
                             className="flex items-center gap-2 text-base text-gray-600 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:text-gray-900"
                         >
                             <Newspaper className="w-4 h-4" />
-                            Revista
+                            Revista Tempo
                         </a>
 
                         <Link
