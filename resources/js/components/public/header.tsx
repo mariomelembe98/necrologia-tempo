@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
-import { Bell, Heart, PenSquare, Search, Menu, X } from 'lucide-react';
+import { Bell, Heart, PenSquare, Search, Menu, Newspaper, X } from 'lucide-react';
 
 export default function PublicHeader() {
     const { url } = usePage();
@@ -77,6 +77,16 @@ export default function PublicHeader() {
                             Pesquisar
                         </Link>
 
+                        <a
+                            href="https://revista.tempo.co.mz/"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex items-center gap-2 text-base text-gray-600 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:text-gray-900"
+                        >
+                            <Newspaper className="w-4 h-4" />
+                            Revista
+                        </a>
+
                         <Link
                             href="/publicar"
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-all duration-200 ${
@@ -141,6 +151,15 @@ export default function PublicHeader() {
                         >
                             Pesquisar
                         </Link>
+                        <a
+                            href="https://revista.tempo.co.mz/"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-200"
+                        >
+                            <Newspaper className="w-4 h-4" />
+                            Revista
+                        </a>
                     </div>
                 </nav>
             </div>

@@ -1,13 +1,5 @@
 @import 'tailwindcss';
 
-@font-face {
-    font-family: 'VeronaBold';
-    src: url('/fonts/Verona-Bold.ttf') format('truetype');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
-
 @import "tw-animate-css";
 
 @source '../views';

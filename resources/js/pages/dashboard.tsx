@@ -121,7 +121,7 @@ export default function Dashboard({
                             Dashboard
                         </h1>
                         <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                            Visao geral dos anuncios, tipos e periodos.
+                            Visa geral dos anúncios, tipos e períodos.
                         </p>
                         <div className="mt-2 flex flex-wrap gap-2">
                             {stats.pendingPromotion > 0 ? (
@@ -138,7 +138,7 @@ export default function Dashboard({
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
                         <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                            Periodo
+                            Período:
                         </span>
                         <input
                             type="date"
@@ -163,7 +163,7 @@ export default function Dashboard({
                             className="h-8 rounded-md border border-slate-200 bg-slate-50 px-2 text-xs text-slate-900 focus:border-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400 dark:border-sidebar-border dark:bg-sidebar dark:text-slate-50 dark:focus:border-slate-300 dark:focus:ring-slate-300"
                         />
                         <span className="text-xs text-slate-400 dark:text-slate-500">
-                            ate
+                            até
                         </span>
                         <input
                             type="date"
@@ -196,7 +196,7 @@ export default function Dashboard({
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                                    Anuncios totais
+                                    Anúncios totais
                                 </p>
                                 <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-50">
                                     {stats.total}
@@ -215,7 +215,7 @@ export default function Dashboard({
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-xs uppercase tracking-wide text-amber-700 dark:text-amber-300">
-                                    Pendentes de revisao
+                                    Pendentes de revisão
                                 </p>
                                 <p className="mt-2 text-2xl font-semibold text-amber-900 dark:text-amber-100">
                                     {stats.pending}
@@ -226,7 +226,7 @@ export default function Dashboard({
                             </div>
                         </div>
                         <p className="mt-2 text-xs text-amber-800/80 dark:text-amber-200/80">
-                            Anuncios aguardando aprovacao ou publicacao.
+                            Anúncios a aguardar revisão ou publicação.
                         </p>
                     </div>
 
@@ -260,7 +260,7 @@ export default function Dashboard({
                                 </span>
                             </div>
                             <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                                Inclui notificacoes de checkout e M-Pesa.
+                                Inclui notificações de checkout e M-Pesa.
                             </p>
                         </div>
                     </div>
@@ -320,11 +320,11 @@ export default function Dashboard({
 
                     <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-sidebar-border/70 dark:bg-sidebar">
                         <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                            ULTIMOS 14 DIAS
+                            ÚLTIMOS 14 DIAS
                         </p>
                         {trend.length > 0 && (
                             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                                {totalTrend} anuncios no periodo, media de{' '}
+                                {totalTrend} anúncios no período, média de{' '}
                                 {averageTrend.toFixed(1)} por dia
                             </p>
                         )}
@@ -354,7 +354,7 @@ export default function Dashboard({
                             )}
                         </div>
                         <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                            Volume de anuncios criados por dia.
+                            Volume de anúncios criados por dia.
                         </p>
                     </div>
                 </div>
@@ -368,7 +368,7 @@ export default function Dashboard({
                             {lastDayVolume}
                         </p>
                         <p className="text-xs text-slate-500 dark:text-slate-400">
-                            Último dia registrado
+                            Último dia registado
                         </p>
                         <p className="mt-2 text-xs text-slate-600 dark:text-slate-300">
                             Média dos últimos {trend.length} dias: {averageTrend.toFixed(1)}
@@ -412,14 +412,14 @@ export default function Dashboard({
                             Atalhos rapidos
                         </h2>
                         <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                            Acesse rapidamente as paginas de gestao.
+                            Acesse rapidamente as páginas de gestão.
                         </p>
                         <div className="mt-3 flex flex-col gap-2 text-sm">
                             <Link
                                 href="/admin/anuncios"
                                 className="inline-flex items-center justify-between rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-800 hover:bg-slate-100 dark:border-sidebar-border dark:bg-sidebar dark:text-slate-50 dark:hover:bg-sidebar/80"
                             >
-                                <span>Gerir anuncios</span>
+                                <span>Gerir anúncios</span>
                                 <span className="text-[11px] text-slate-500 dark:text-slate-400">
                                     Ver todos
                                 </span>
@@ -428,7 +428,7 @@ export default function Dashboard({
                                 href="/admin/planos"
                                 className="inline-flex items-center justify-between rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-800 hover:bg-slate-100 dark:border-sidebar-border dark:bg-sidebar dark:text-slate-50 dark:hover:bg-sidebar/80"
                             >
-                                <span>Planos de anuncio</span>
+                                <span>Planos de anúncio</span>
                                 <span className="text-[11px] text-slate-500 dark:text-slate-400">
                                     Configurar
                                 </span>
@@ -446,9 +446,9 @@ export default function Dashboard({
                                 href="/publicar"
                                 className="inline-flex items-center justify-between rounded-md border border-sky-200 bg-sky-50 px-3 py-2 text-xs font-medium text-sky-800 hover:bg-sky-100 dark:border-sky-500/50 dark:bg-sky-950/40 dark:text-sky-50 dark:hover:bg-sky-900/60"
                             >
-                                <span>Novo anuncio publico</span>
+                                <span>Novo anúncio público</span>
                                 <span className="text-[11px] text-sky-700 dark:text-sky-200">
-                                    Abrir pagina
+                                    Abrir página
                                 </span>
                             </Link>
                         </div>
@@ -460,11 +460,11 @@ export default function Dashboard({
                             Ultimos anuncios
                         </h2>
                         <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                            Ultimas publicacoes registradas no sistema.
+                            Últimas publicações registradas no sistema.
                         </p>
                         {latestAnnouncements.length === 0 ? (
                             <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">
-                                Nenhum anuncio encontrado para o periodo atual.
+                                Nenhum anúncio encontrado para o período actual.
                             </p>
                         ) : (
                             <ul className="mt-3 space-y-2">
@@ -521,11 +521,11 @@ export default function Dashboard({
                             Por expirar em breve
                         </h2>
                         <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                            Anuncios publicados com data de expiracao mais proxima.
+                            Anúncios publicados com data de expiração mais próxima.
                         </p>
                         {expiringSoon.length === 0 ? (
                             <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">
-                                Nenhum anuncio proximo de expirar.
+                                Nenhum anúncio próximo de expirar.
                             </p>
                         ) : (
                             <ul className="mt-3 space-y-2">
