@@ -158,7 +158,7 @@ export default function PublicHeader() {
                             className="flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-200"
                         >
                             <Newspaper className="w-4 h-4" />
-                            Revista
+                            Revista Tempo
                         </a>
                     </div>
                 </nav>
