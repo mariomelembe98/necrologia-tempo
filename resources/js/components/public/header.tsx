@@ -126,7 +126,9 @@ export default function PublicHeader() {
 
                 <nav
                     className={`md:hidden border-t border-gray-200 overflow-hidden transition-all duration-300 ease-out ${
-                        mobileOpen ? 'max-h-40 pb-4 pt-3 opacity-100' : 'max-h-0 pb-0 pt-0 opacity-0'
+                        mobileOpen
+                            ? 'max-h-96 pb-4 pt-3 opacity-100'
+                            : 'max-h-0 pb-0 pt-0 opacity-0'
                     }`}
                 >
                     <div className="flex flex-col gap-2">
@@ -157,7 +159,6 @@ export default function PublicHeader() {
                             rel="noreferrer"
                             className="flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-200"
                         >
-                            <Newspaper className="w-4 h-4" />
                             Revista Tempo
                         </a>
                     </div>
