@@ -330,7 +330,7 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                 {flash.error}
                             </div>
                         )}
-                        
+
                         <h1 className="text-2xl sm:text-3xl font-semibold text-white mb-3">
                             Publicar Anúncio
                         </h1>
@@ -595,7 +595,17 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                         onChange={handleChange}
                                         placeholder="Nome completo da pessoa falecida"
                                         required
+                                        className={
+                                            errors?.name
+                                                ? 'border-red-500 focus-visible:ring-red-500'
+                                                : undefined
+                                        }
                                     />
+                                    {errors?.name && (
+                                        <p className="text-xs text-red-600 mt-1">
+                                            {errors.name}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="grid gap-4 sm:grid-cols-2">
@@ -661,14 +671,26 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                         onChange={handleChange}
                                         placeholder="Cidade, província"
                                         required
+                                        className={
+                                            errors?.location
+                                                ? 'border-red-500 focus-visible:ring-red-500'
+                                                : undefined
+                                        }
                                     />
+                                    {errors?.location && (
+                                        <p className="text-xs text-red-600 mt-1">
+                                            {errors.location}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="space-y-2">
                                     <Label htmlFor="photo">
                                         Foto do homenageado/falecido (opcional)
                                     </Label>
-                                    <div className="border-2 border-dashed border-slate-300 rounded-lg p-4">
+                                    <div className={`border-2 border-dashed rounded-lg p-4 ${
+                                        errors?.photo ? 'border-red-500 bg-red-50' : 'border-slate-300'
+                                    }`}>
                                         {!photoName ? (
                                             <label htmlFor="photo" className="cursor-pointer block">
                                                 <div className="text-center">
@@ -702,6 +724,11 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                             </div>
                                         )}
                                     </div>
+                                    {errors?.photo && (
+                                        <p className="text-xs text-red-600 mt-1">
+                                            {errors.photo}
+                                        </p>
+                                    )}
                                 </div>
 
 
@@ -727,7 +754,17 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                                     : 'Escreva os detalhes principais do anúncio...'
                                         }
                                         required
+                                        className={
+                                            errors?.description
+                                                ? 'border-red-500 focus-visible:ring-red-500'
+                                                : undefined
+                                        }
                                     />
+                                    {errors?.description && (
+                                        <p className="text-xs text-red-600 mt-1">
+                                            {errors.description}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="space-y-2">
@@ -741,7 +778,17 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                         onChange={handleChange}
                                         placeholder="Nome da família ou responsável"
                                         required
+                                        className={
+                                            errors?.author
+                                                ? 'border-red-500 focus-visible:ring-red-500'
+                                                : undefined
+                                        }
                                     />
+                                    {errors?.author && (
+                                        <p className="text-xs text-red-600 mt-1">
+                                            {errors.author}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 
@@ -772,7 +819,17 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                         onChange={handleChange}
                                         placeholder="Seu nome completo"
                                         required
+                                        className={
+                                            errors?.advertiserName
+                                                ? 'border-red-500 focus-visible:ring-red-500'
+                                                : undefined
+                                        }
                                     />
+                                    {errors?.advertiserName && (
+                                        <p className="text-xs text-red-600 mt-1">
+                                            {errors.advertiserName}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="grid gap-4 sm:grid-cols-2">
@@ -788,7 +845,17 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                             onChange={handlePhoneChange}
                                             placeholder="+258 XX XXX XXXX"
                                             required
+                                            className={
+                                                errors?.advertiserPhone
+                                                    ? 'border-red-500 focus-visible:ring-red-500'
+                                                    : undefined
+                                            }
                                         />
+                                        {errors?.advertiserPhone && (
+                                            <p className="text-xs text-red-600 mt-1">
+                                                {errors.advertiserPhone}
+                                            </p>
+                                        )}
                                         <p className="text-xs text-slate-500">
                                             Formato sugerido: +258 84 123 4567
                                         </p>
@@ -805,7 +872,17 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                             value={formData.advertiserEmail}
                                             onChange={handleChange}
                                             placeholder="seu@email.com"
+                                            className={
+                                                errors?.advertiserEmail
+                                                    ? 'border-red-500 focus-visible:ring-red-500'
+                                                    : undefined
+                                            }
                                         />
+                                        {errors?.advertiserEmail && (
+                                            <p className="text-xs text-red-600 mt-1">
+                                                {errors.advertiserEmail}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
 
@@ -813,7 +890,9 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                     <Label htmlFor="document">
                                         Documento de identificação *
                                     </Label>
-                                    <div className="border-2 border-dashed border-slate-300 rounded-lg p-6">
+                                    <div className={`border-2 border-dashed rounded-lg p-6 ${
+                                        errors?.document ? 'border-red-500 bg-red-50' : 'border-slate-300'
+                                    }`}>
                                         {!documentName ? (
                                             <label
                                                 htmlFor="document"
@@ -863,6 +942,11 @@ export default function PublishPage({ plans }: PublishPageProps) {
                                             publicamente.
                                         </p>
                                     </div>
+                                    {errors?.document && (
+                                        <p className="text-xs text-red-600 mt-1">
+                                            {errors.document}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 
