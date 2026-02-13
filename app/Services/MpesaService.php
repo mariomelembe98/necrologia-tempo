@@ -106,7 +106,7 @@ class MpesaService
 
                 $data = $response->json();
                 $message = $data['output_ResponseDesc']
-                    ?? 'Nao foi possivel iniciar o pagamento via M-Pesa.';
+                    ?? 'Nao foi possível iniciar o pagamento via M-Pesa.';
 
                 return [
                     'success' => false,
