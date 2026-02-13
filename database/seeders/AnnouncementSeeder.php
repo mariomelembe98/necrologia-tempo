@@ -56,7 +56,7 @@ class AnnouncementSeeder extends Seeder
                 'payment_status' => 'paid',
                 'payment_method' => null,
                 'payment_reference' => null,
-                'photo_path' => null,
+                'photo_path' => 'https://i0.wp.com/revista.tempo.co.mz/wp-content/uploads/DESFOCADO-02.07.2025.png?resize=696%2C928&ssl=1',
                 'document_path' => null,
                 'published_at' => $publishedAt,
                 'paid_at' => $publishedAt,
