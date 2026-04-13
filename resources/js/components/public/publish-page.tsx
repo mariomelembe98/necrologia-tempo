@@ -44,8 +44,8 @@ interface PublishPageProps {
 }
 
 // Free promotion valid until December 31, 2025
-const FREE_UNTIL = new Date('2025-12-31T23:59:59');
-const FREE_PROMO_LABEL = '31/12/2025';
+const FREE_UNTIL = new Date('2026-12-31T23:59:59');
+const FREE_PROMO_LABEL = '31/12/2026';
 
 const defaultPlans: Plan[] = [
     {

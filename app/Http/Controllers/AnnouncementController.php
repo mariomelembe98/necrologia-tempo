@@ -183,16 +183,15 @@ class AnnouncementController extends Controller
             report($exception);
         }
 
-        $freeUntil = Announcement::promotionEndsAt();
-        if (now()->lte($freeUntil)) {
+        if (Announcement::isPromotionActive()) {
             return redirect()
                 ->route('public.publicar')
-                ->with('success', 'Anuncio criado! Durante a promoção o pagamento é gratuito, o seu pedido ficará pendente e será publicado após revisão.');
+                ->with('success', 'O anúncio foi criado gratuitamente e ficará pendente para revisão.');
         }
 
         return redirect()
             ->route('checkout.show', $announcement)
-            ->with('success', 'Anuncio criado! Complete o pagamento M-Pesa para publicar.');
+            ->with('success', 'Anúncio criado! Complete o pagamento M-Pesa para publicar.');
     }
 
     protected function generateUniqueSlug(string $name): string
@@ -225,6 +224,10 @@ class AnnouncementController extends Controller
 
         if ($data['status'] === 'published' && ! $announcement->published_at) {
             $announcement->published_at = now();
+            if (! $announcement->payment_status) {
+                $announcement->payment_status = 'free';
+                $announcement->paid_at = now();
+            }
         }
 
         $announcement->save();

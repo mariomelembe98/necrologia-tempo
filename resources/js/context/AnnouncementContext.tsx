@@ -39,7 +39,7 @@ const mockAnnouncements: Announcement[] = [
     {
         id: '1',
         slug: 'curratilaine-remane',
-        photoUrl: 'https://i0.wp.com/revista.tempo.co.mz/wp-content/uploads/DESFOCADO-02.07.2025.png?resize=696%2C928&ssl=1',
+        photoUrl: 'https:/revista.tempo.co.mz/wp-content/uploads/DESFOCADO-02.07.2025.png?resize=696%2C928&ssl=1',
         type: 'homenagem',
         name: 'Curratilaine Remane',
         dateOfDeath: '2026-02-13',
