@@ -30,7 +30,7 @@ class AnnouncementSeeder extends Seeder
         $advertiser = Advertiser::query()->firstOrCreate(
             ['email' => 'homenagem.curratilaine@example.com'],
             [
-                'name' => 'Comissão de Homenagem',
+                'name' => 'Família Remane',
                 'phone' => '+258 84 000 0000',
                 'document_path' => null,
                 'document_status' => 'verified',
@@ -38,7 +38,7 @@ class AnnouncementSeeder extends Seeder
             ],
         );
 
-        $publishedAt = Carbon::parse('2026-02-13 09:00:00');
+        $publishedAt = Carbon::now();
 
         Announcement::query()->updateOrCreate(
             ['slug' => 'curratilaine-remane'],
